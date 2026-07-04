@@ -1,0 +1,610 @@
+{% extends 'adminapp/base.html' %}
+
+{% block title %}Dashboard | E-Election{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================================
+       PAGE HEADER
+    ============================================================ */
+    .dashboard-header {
+        margin-bottom: 30px;
+    }
+    .dashboard-header h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        letter-spacing: -0.5px;
+    }
+    .dashboard-header p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-top: 5px;
+    }
+    .header-time {
+        font-size: 0.85rem;
+        color: var(--accent-color);
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        padding: 5px 12px;
+        border-radius: 20px;
+        margin-top: 8px;
+    }
+
+    /* ============================================================
+       STAT CARDS GRID
+    ============================================================ */
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card {
+        background: rgba(30, 41, 59, 0.65);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 20px;
+        padding: 22px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: -30px; right: -30px;
+        width: 100px; height: 100px;
+        border-radius: 50%;
+        opacity: 0.07;
+        filter: blur(20px);
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 14px 36px rgba(0,0,0,0.3);
+    }
+
+    .stat-card.c-indigo::before  { background: #6366f1; }
+    .stat-card.c-green::before   { background: #10b981; }
+    .stat-card.c-amber::before   { background: #f59e0b; }
+    .stat-card.c-blue::before    { background: #3b82f6; }
+    .stat-card.c-pink::before    { background: #ec4899; }
+
+    .stat-icon {
+        width: 46px; height: 46px;
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.3rem;
+        margin-bottom: 14px;
+    }
+    .ic-indigo { background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.2); }
+    .ic-green  { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+    .ic-amber  { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+    .ic-blue   { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+    .ic-pink   { background: rgba(236,72,153,0.15); color: #f472b6; border: 1px solid rgba(236,72,153,0.2); }
+
+    .stat-value {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        line-height: 1;
+        margin-bottom: 6px;
+    }
+    .stat-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    /* ============================================================
+       PANELS (generic)
+    ============================================================ */
+    .panel {
+        background: rgba(30, 41, 59, 0.65);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 22px;
+        padding: 26px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .panel-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 20px;
+    }
+    .panel-title i {
+        width: 32px; height: 32px;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.9rem;
+        background: rgba(99,102,241,0.15);
+        color: #818cf8;
+    }
+
+    /* ============================================================
+       ID UTILIZATION RING
+    ============================================================ */
+    .id-ring-wrapper {
+        display: flex; gap: 28px; align-items: center;
+    }
+    .ring-svg {
+        flex-shrink: 0;
+        position: relative;
+        width: 120px; height: 120px;
+    }
+    .ring-text {
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    .ring-pct  { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); }
+    .ring-sub  { font-size: 0.7rem; color: var(--text-secondary); font-weight: 600; }
+    .ring-detail { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .ring-row  { display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; }
+    .ring-dot  { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 7px; }
+
+    /* ============================================================
+       GENDER SPLIT
+    ============================================================ */
+    .gender-bar-outer {
+        height: 12px;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        margin-bottom: 15px;
+    }
+    .gender-fill-m { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .gender-fill-f { background: linear-gradient(90deg, #ec4899, #f472b6); }
+    .gender-legend  {
+        display: flex; justify-content: space-between;
+    }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--text-secondary); }
+    .legend-item strong { color: var(--text-primary); }
+
+    /* ============================================================
+       TOP CANDIDATE HERO
+    ============================================================ */
+    .hero-card {
+        background: linear-gradient(135deg,
+            rgba(99,102,241,0.25) 0%,
+            rgba(168,85,247,0.15) 50%,
+            rgba(30,41,59,0.3) 100%);
+        border: 1px solid rgba(99,102,241,0.25);
+        border-radius: 22px;
+        padding: 28px;
+        display: flex; gap: 24px; align-items: center;
+        box-shadow: 0 0 40px rgba(99,102,241,0.15);
+        margin-bottom: 28px;
+    }
+    .hero-img {
+        width: 90px; height: 90px;
+        border-radius: 22px;
+        border: 3px solid rgba(99,102,241,0.5);
+        object-fit: cover;
+        flex-shrink: 0;
+        background: rgba(0,0,0,0.3);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.5rem; color: var(--text-secondary);
+        overflow: hidden;
+    }
+    .hero-img img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-body { flex: 1; }
+    .hero-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #a5b4fc; font-weight: 700; margin-bottom: 4px; }
+    .hero-name  { font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; }
+    .hero-dept  { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 14px; }
+    .hero-stat  {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(16,185,129,0.15);
+        border: 1px solid rgba(16,185,129,0.3);
+        padding: 7px 16px; border-radius: 30px;
+        color: #34d399; font-weight: 700; font-size: 1rem;
+    }
+    .hero-pct {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(99,102,241,0.15);
+        border: 1px solid rgba(99,102,241,0.3);
+        padding: 7px 16px; border-radius: 30px;
+        color: #818cf8; font-weight: 700; font-size: 1rem;
+        margin-left: 10px;
+    }
+
+    /* ============================================================
+       MAIN GRID LAYOUT
+    ============================================================ */
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+    @media(max-width: 900px){ .main-grid { grid-template-columns: 1fr; } }
+
+    .bottom-grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 24px;
+    }
+    @media(max-width: 900px){ .bottom-grid { grid-template-columns: 1fr; } }
+
+    /* ============================================================
+       LEADERBOARD
+    ============================================================ */
+    .lb-row {
+        display: flex; align-items: center; gap: 14px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-rank {
+        width: 28px; height: 28px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; font-weight: 800;
+        flex-shrink: 0;
+    }
+    .rank-1 { background: rgba(251,191,36,0.2); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+    .rank-2 { background: rgba(148,163,184,0.2); color: #94a3b8; border: 1px solid rgba(148,163,184,0.3); }
+    .rank-3 { background: rgba(180,83,9,0.2); color: #f97316; border: 1px solid rgba(180,83,9,0.3); }
+    .rank-n { background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.08); }
+
+    .lb-avatar {
+        width: 36px; height: 36px;
+        border-radius: 50%; overflow: hidden;
+        background: rgba(255,255,255,0.07);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .lb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .lb-info { flex: 1; }
+    .lb-name { font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
+    .lb-dept { font-size: 0.78rem; color: var(--text-secondary); }
+    .lb-bar-wrap { width: 80px; }
+    .lb-bar-bg { height: 6px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
+    .lb-bar-fill { height: 100%; background: linear-gradient(90deg, #818cf8, #a855f7); border-radius: 6px; }
+    .lb-pct { font-size: 0.8rem; color: var(--accent-color); font-weight: 700; text-align: right; margin-top: 3px; }
+
+    /* ============================================================
+       DEPARTMENT STATS
+    ============================================================ */
+    .dept-row {
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .dept-row:last-child { border-bottom: none; }
+    .dept-meta { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.88rem; }
+    .dept-name-lbl { color: var(--text-primary); font-weight: 600; }
+    .dept-vote-lbl { color: var(--text-secondary); }
+    .dept-bar-outer { height: 7px; border-radius: 7px; background: rgba(255,255,255,0.07); overflow: hidden; }
+    .dept-bar-inner { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 7px; }
+
+    /* ============================================================
+       RECENT VOTES TABLE
+    ============================================================ */
+    .recent-table { width: 100%; border-collapse: collapse; }
+    .recent-table th {
+        text-align: left; padding: 10px 12px;
+        color: var(--text-secondary); font-size: 0.78rem;
+        font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .recent-table td {
+        padding: 12px;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+        vertical-align: middle;
+    }
+    .recent-table tr:last-child td { border-bottom: none; }
+    .recent-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .id-chip {
+        font-family: monospace; font-weight: 700; font-size: 0.92rem;
+        color: #a855f7;
+        background: rgba(168,85,247,0.1);
+        border: 1px solid rgba(168,85,247,0.2);
+        padding: 4px 10px; border-radius: 8px;
+    }
+    .gbadge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+    .gb-m { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+    .gb-f { background: rgba(236,72,153,0.15); color: #f472b6; border: 1px solid rgba(236,72,153,0.2); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="dashboard-header">
+    <h1><i class="fa-solid fa-chart-line" style="color: var(--accent-color);"></i> Election Dashboard</h1>
+    <p>Real-time overview of the E-Election system</p>
+    <span class="header-time"><i class="fa-regular fa-clock"></i> <span id="liveTime"></span></span>
+</div>
+
+<!-- =========================================================
+     STAT CARDS
+     ========================================================= -->
+<div class="stat-grid">
+    <div class="stat-card c-indigo">
+        <div class="stat-icon ic-indigo"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-value">{{ total_voters }}</div>
+        <div class="stat-label">Cododka Ladhibtay </div>
+    </div>
+    <div class="stat-card c-green">
+        <div class="stat-icon ic-green"><i class="fa-solid fa-user-tie"></i></div>
+        <div class="stat-value">{{ total_candidates }}</div>
+        <div class="stat-label">Musharax</div>
+    </div>
+    <div class="stat-card c-amber">
+        <div class="stat-icon ic-amber"><i class="fa-solid fa-id-card-clip"></i></div>
+        <div class="stat-value">{{ total_ids }}</div>
+        <div class="stat-label"> IDs </div>
+    </div>
+    <div class="stat-card c-blue">
+        <div class="stat-icon ic-blue"><i class="fa-solid fa-building"></i></div>
+        <div class="stat-value">{{ total_departments }}</div>
+        <div class="stat-label">Departments</div>
+    </div>
+    <div class="stat-card c-pink">
+        <div class="stat-icon ic-pink"><i class="fa-solid fa-user-shield"></i></div>
+        <div class="stat-value">{{ total_admins }}</div>
+        <div class="stat-label">Administrators</div>
+    </div>
+</div>
+
+<!-- =========================================================
+     TOP CANDIDATE HERO
+     ========================================================= -->
+{% if top_candidate %}
+<div class="hero-card">
+    <div class="hero-img">
+        {% if top_candidate.image %}
+            <img src="{{ top_candidate.image }}" alt="{{ top_candidate.name }}">
+        {% else %}
+            <i class="fa-solid fa-user-tie"></i>
+        {% endif %}
+    </div>
+    <div class="hero-body">
+        <div class="hero-title"><i class="fa-solid fa-trophy"></i> &nbsp;Musharaxa Ugu sita</div>
+        <div class="hero-name">{{ top_candidate.name }}</div>
+        <div class="hero-dept"><i class="fa-solid fa-building" style="margin-right:5px;"></i>{{ top_candidate.dept }}</div>
+        <span class="hero-stat"><i class="fa-solid fa-check-circle"></i> {{ top_candidate.votes }} Codod</span>
+        <span class="hero-pct"><i class="fa-solid fa-chart-pie"></i> {{ top_candidate.pct }}% Cododka</span>
+    </div>
+    <div style="text-align:right; flex-shrink:0;">
+        <div style="font-size: 3.5rem; font-weight: 900; background: linear-gradient(135deg, #818cf8, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            #1
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-secondary);">Gidomiyaha</div>
+    </div>
+</div>
+{% endif %}
+
+<!-- =========================================================
+     MAIN GRID: ID Utilization + Gender Split
+     ========================================================= -->
+<div class="main-grid">
+
+    <!-- ID Utilization Donut -->
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-key"></i>ID-yada</div>
+        <div class="id-ring-wrapper">
+            <div class="ring-svg">
+                <svg viewBox="0 0 120 120" width="120" height="120">
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="14"/>
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="url(#ringGrad)" stroke-width="14"
+                        stroke-linecap="round"
+                        stroke-dasharray="314"
+                        stroke-dashoffset="{{ 314|add:"-"|add:id_utilization|floatformat:0 }}"
+                        transform="rotate(-90 60 60)"
+                        id="utilizationArc"
+                        style="transition: stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);"
+                    />
+                    <defs>
+                        <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#6366f1"/>
+                            <stop offset="100%" stop-color="#10b981"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="ring-text">
+                    <div class="ring-pct">{{ id_utilization }}%</div>
+                    <div class="ring-sub">La Isticmalay</div>
+                </div>
+            </div>
+            <div class="ring-detail">
+                <div class="ring-row">
+                    <span><span class="ring-dot" style="background:#10b981;"></span>ID La Isticmalay</span>
+                    <strong style="color:#34d399;">{{ used_ids }}</strong>
+                </div>
+                <div class="ring-row">
+                    <span><span class="ring-dot" style="background:#6366f1;"></span>ID Harsan</span>
+                    <strong style="color:#818cf8;">{{ unused_ids }}</strong>
+                </div>
+                <div class="ring-row">
+                    <span><span class="ring-dot" style="background:rgba(255,255,255,0.2);"></span>Tirada Guud</span>
+                    <strong style="color:var(--text-primary);">{{ total_ids }}</strong>
+                </div>
+                <div style="margin-top: 8px; height: 6px; border-radius: 6px; background: rgba(255,255,255,0.07); overflow: hidden;">
+                    <div style="height: 100%; width: {{ id_utilization }}%; background: linear-gradient(90deg, #6366f1, #10b981); border-radius: 6px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gender Demographics -->
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-venus-mars"></i> Tirakoobka Jinsiga</div>
+        <div class="gender-bar-outer">
+            <div class="gender-fill-m" style="width: {{ male_pct }}%;"></div>
+            <div class="gender-fill-f" style="width: {{ female_pct }}%;"></div>
+        </div>
+        <div class="gender-legend" style="margin-bottom: 20px;">
+            <div class="legend-item">
+                <span style="display:inline-block; width:10px; height:10px; border-radius:3px; background:#3b82f6;"></span>
+                Lab <strong>{{ male_voters }}</strong> &mdash; <strong style="color:#60a5fa;">{{ male_pct }}%</strong>
+            </div>
+            <div class="legend-item">
+                <span style="display:inline-block; width:10px; height:10px; border-radius:3px; background:#ec4899;"></span>
+                 DHadig <strong>{{ female_voters }}</strong> &mdash; <strong style="color:#f472b6;">{{ female_pct }}%</strong>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px;">
+            <div style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); border-radius: 14px; padding: 16px; text-align: center;">
+                <i class="fa-solid fa-mars" style="font-size: 1.6rem; color: #60a5fa; margin-bottom: 8px; display:block;"></i>
+                <div style="font-size: 1.6rem; font-weight: 800; color: #60a5fa;">{{ male_voters }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Lab</div>
+            </div>
+            <div style="background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.2); border-radius: 14px; padding: 16px; text-align: center;">
+                <i class="fa-solid fa-venus" style="font-size: 1.6rem; color: #f472b6; margin-bottom: 8px; display:block;"></i>
+                <div style="font-size: 1.6rem; font-weight: 800; color: #f472b6;">{{ female_voters }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">DHadig</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     BOTTOM GRID: Leaderboard + Department Stats
+     ========================================================= -->
+<div class="bottom-grid">
+
+    <!-- Candidates Leaderboard -->
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-ranking-star"></i> Kala Saraynta Musharixinta</div>
+        {% for c in leaderboard %}
+        <div class="lb-row">
+            <div class="lb-rank {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% else %}rank-n{% endif %}">
+                {{ forloop.counter }}
+            </div>
+            <div class="lb-avatar">
+                {% if c.image %}
+                    <img src="{{ c.image }}" alt="{{ c.name }}">
+                {% else %}
+                    <i class="fa-solid fa-user" style="color: var(--text-secondary); font-size: 0.9rem;"></i>
+                {% endif %}
+            </div>
+            <div class="lb-info">
+                <div class="lb-name">{{ c.name }}</div>
+                <div class="lb-dept">{{ c.dept }}</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">{{ c.votes }} votes</div>
+                <div class="lb-pct">{{ c.pct }}%</div>
+            </div>
+            <div class="lb-bar-wrap">
+                <div class="lb-bar-bg">
+                    <div class="lb-bar-fill" style="width: {{ c.pct }}%;"></div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 30px; color: var(--text-secondary);">
+            <i class="fa-solid fa-users-slash" style="font-size: 2rem; margin-bottom: 10px; display:block; opacity: 0.5;"></i>
+            No candidates registered yet.
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Department Votes Distribution -->
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-building-columns"></i> Cododka Departmentska</div>
+        {% for d in dept_stats %}
+        <div class="dept-row">
+            <div class="dept-meta">
+                <span class="dept-name-lbl">{{ d.name }}</span>
+                <span class="dept-vote-lbl">{{ d.votes }} votes &mdash; <strong style="color:#34d399;">{{ d.pct }}%</strong></span>
+            </div>
+            <div class="dept-bar-outer">
+                <div class="dept-bar-inner" style="width: {{ d.pct }}%;"></div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 30px; color: var(--text-secondary);">
+            <i class="fa-solid fa-building-circle-xmark" style="font-size: 2rem; margin-bottom: 10px; display:block; opacity: 0.5;"></i>
+            No department data yet.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- =========================================================
+     RECENT VOTES TABLE
+     ========================================================= -->
+<div class="panel" style="margin-top: 24px;">
+    <div class="panel-title"><i class="fa-solid fa-bolt"></i> Codadki Udambeyey</div>
+    <div style="overflow-x: auto;">
+        <table class="recent-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Voter ID</th>
+                    <th>Voted For</th>
+                    <th>Department</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vote in recent_votes %}
+                <tr>
+                    <td style="color: var(--text-secondary);">{{ forloop.counter }}</td>
+                    <td><span class="id-chip">{{ vote.c_id }}</span></td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:8px; font-weight:600;">
+                            <i class="fa-solid fa-user-tie" style="color: var(--accent-color);"></i>
+                            {{ vote.c_musharax.m_name }}
+                        </div>
+                    </td>
+                    <td style="color: var(--text-secondary);">{{ vote.c_department }}</td>
+                    <td>
+                        {% if vote.c_gender == 'lab' %}
+                            <span class="gbadge gb-m"><i class="fa-solid fa-mars"></i> Lab</span>
+                        {% else %}
+                            <span class="gbadge gb-f"><i class="fa-solid fa-venus"></i> DHadig</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <i class="fa-solid fa-box-open" style="font-size: 2.5rem; display:block; margin-bottom:10px; opacity:0.4;"></i>
+                        No votes have been cast yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Live Clock
+    function updateClock() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        document.getElementById('liveTime').textContent = now.toLocaleDateString('en-US', options);
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Animate SVG Donut Ring
+    window.addEventListener('load', () => {
+        const pct = {{ id_utilization }};
+        const circumference = 314;
+        const offset = circumference - (pct / 100) * circumference;
+        const arc = document.getElementById('utilizationArc');
+        if (arc) {
+            arc.style.strokeDashoffset = offset;
+        }
+    });
+</script>
+{% endblock %}

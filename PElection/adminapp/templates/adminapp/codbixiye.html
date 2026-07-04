@@ -1,0 +1,364 @@
+{% extends 'adminapp/base.html' %}
+
+{% block title %}Codbixiyeyaal | E-Election{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    /* Summary Cards */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-bottom: 30px;
+    }
+
+    .summary-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 20px;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+        pointer-events: none;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        background: rgba(30, 41, 59, 0.9);
+    }
+
+    .sc-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-right: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .icon-total { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+    .icon-male { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(14, 165, 233, 0.2)); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .icon-female { background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(244, 63, 94, 0.2)); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3); }
+
+    .sc-info h3 {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .sc-info p {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-top: 5px;
+    }
+
+    /* Controls Area (Search) */
+    .controls-area {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+
+    .search-box {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .search-input {
+        width: 100%;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        padding: 14px 20px 14px 50px;
+        border-radius: 14px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        background: rgba(15, 23, 42, 0.8);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    /* Table Section */
+    .table-container {
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        overflow-x: auto;
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .premium-table th {
+        text-align: left;
+        padding: 16px;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .premium-table td {
+        padding: 16px;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        vertical-align: middle;
+        transition: background 0.2s;
+    }
+
+    .premium-table tr:hover td {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .premium-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .id-value {
+        font-family: monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #a855f7;
+        background: rgba(168, 85, 247, 0.1);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        padding: 6px 12px;
+        border-radius: 8px;
+    }
+
+    .gender-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .gender-lab {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .gender-dhadig {
+        background: rgba(236, 72, 153, 0.15);
+        color: #ec4899;
+        border: 1px solid rgba(236, 72, 153, 0.3);
+    }
+
+    .candidate-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .candidate-name i {
+        color: #10b981;
+        font-size: 1.1rem;
+    }
+
+    .dept-name {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Codadka La DHibtay</h1>
+</div>
+
+<!-- Summary Cards -->
+<div class="summary-grid">
+    <div class="summary-card">
+        <div class="sc-icon icon-total">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="sc-info">
+            <h3>Tirada Gud</h3>
+            <p>{{ total_votes }}</p>
+        </div>
+    </div>
+    <div class="summary-card">
+        <div class="sc-icon icon-male">
+            <i class="fa-solid fa-mars"></i>
+        </div>
+        <div class="sc-info">
+            <h3>Labka</h3>
+            <p>{{ male_votes }}</p>
+        </div>
+    </div>
+    <div class="summary-card">
+        <div class="sc-icon icon-female">
+            <i class="fa-solid fa-venus"></i>
+        </div>
+        <div class="sc-info">
+            <h3>Dhadiga</h3>
+            <p>{{ female_votes }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Search Controls -->
+<div class="controls-area">
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by ID, Candidate, or Department...">
+    </div>
+</div>
+
+<!-- Data Table -->
+<div class="table-container">
+    <table class="premium-table" id="votersTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th> ID</th>
+                <th>Musharaxa</th>
+                <th>Department</th>
+                <th>Jinsiga</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for voter in voters %}
+            <tr class="voter-row">
+                <td style="color: var(--text-secondary);">{{ forloop.counter }}</td>
+                <td class="searchable-id">
+                    <span class="id-value">{{ voter.c_id }}</span>
+                </td>
+                <td class="searchable-candidate">
+                    <div class="candidate-name">
+                        <i class="fa-solid fa-user-tie"></i>
+                        {{ voter.c_musharax.m_name }}
+                    </div>
+                </td>
+                <td class="searchable-dept">
+                    <span class="dept-name">{{ voter.c_department.name|default:voter.c_department }}</span>
+                </td>
+                <td>
+                    {% if voter.c_gender == 'lab' %}
+                        <span class="gender-badge gender-lab"><i class="fa-solid fa-mars"></i> Lab</span>
+                    {% else %}
+                        <span class="gender-badge gender-dhadig"><i class="fa-solid fa-venus"></i> DHadig</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr id="emptyRow">
+                <td colspan="5" style="text-align: center; padding: 50px; color: var(--text-secondary);">
+                    <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <br><span style="font-size: 1.1rem;">No votes casted yet.</span>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr id="noResultsRow" style="display: none;">
+                <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fa-solid fa-search" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                    <br>No matching records found.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const tableRows = document.querySelectorAll('.voter-row');
+        const noResultsRow = document.getElementById('noResultsRow');
+
+        searchInput.addEventListener('keyup', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            let hasVisibleRows = false;
+
+            tableRows.forEach(row => {
+                const idText = row.querySelector('.searchable-id').textContent.toLowerCase();
+                const candidateText = row.querySelector('.searchable-candidate').textContent.toLowerCase();
+                const deptText = row.querySelector('.searchable-dept').textContent.toLowerCase();
+                
+                // Combine all searchable text
+                const searchableContent = idText + " " + candidateText + " " + deptText;
+
+                if (searchableContent.includes(searchTerm)) {
+                    row.style.display = '';
+                    hasVisibleRows = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Show 'no results' row if all data rows are hidden and we have rows to begin with
+            if (!hasVisibleRows && tableRows.length > 0) {
+                noResultsRow.style.display = '';
+            } else {
+                noResultsRow.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

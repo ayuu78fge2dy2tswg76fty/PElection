@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Election | Ku Cod Musharaxaaga</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    {% load static %}
+    <style>
+        :root {
+            --bg: #0a0f1e;
+            --surface: rgba(15, 23, 42, 0.8);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border: rgba(255,255,255,0.07);
+            --accent: #6366f1;
+            --accent2: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warn: #f59e0b;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(168,85,247,0.08) 0%, transparent 50%);
+        }
+
+        /* ======== NAVBAR ======== */
+        .navbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10, 15, 30, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            height: 68px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-brand {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 1.3rem; font-weight: 800;
+        }
+        .nav-logo {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+        .nav-stats {
+            display: flex; gap: 20px; align-items: center;
+            font-size: 0.85rem; color: var(--muted);
+        }
+        .nav-chip {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.2);
+            padding: 5px 14px; border-radius: 20px;
+            color: #a5b4fc; font-weight: 600;
+        }
+
+        /* ======== HERO SECTION ======== */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.25);
+            color: #34d399;
+            padding: 8px 20px; border-radius: 30px;
+            font-size: 0.85rem; font-weight: 700;
+            margin-bottom: 22px;
+            letter-spacing: 0.5px;
+        }
+        .hero-badge span { animation: pulse-dot 2s ease-in-out infinite; }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .hero h1 {
+            font-size: 2.8rem; font-weight: 900;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 14px;
+        }
+        .hero p {
+            font-size: 1.05rem; color: var(--muted); max-width: 500px; margin: 0 auto;
+        }
+
+        /* ======== CANDIDATES GRID ======== */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 30px 80px; }
+
+        .section-label {
+            font-size: 0.82rem; font-weight: 700; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 1.5px;
+            margin-bottom: 20px;
+        }
+
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .cand-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .cand-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(99,102,241,0.15);
+            border-color: rgba(99,102,241,0.3);
+        }
+
+        .cand-header {
+            height: 200px;
+            background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.1));
+            position: relative;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cand-image-cover {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .cand-card:hover .cand-image-cover {
+            transform: scale(1.08);
+        }
+        .cand-placeholder {
+            font-size: 5rem; color: rgba(255,255,255,0.1);
+        }
+        .cand-header-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, var(--card-bg) 0%, rgba(30,41,59,0) 50%);
+        }
+
+        .cand-body { 
+            padding: 0 24px 28px; 
+            text-align: center; 
+            position: relative; z-index: 10;
+        }
+        .cand-name { 
+            font-size: 1.4rem; font-weight: 900; margin-bottom: 24px;
+            background: linear-gradient(135deg, #f8fafc, #94a3b8);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transform: translateY(-10px);
+        }
+
+        .btn-vote {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white; border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: 700; font-size: 1rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 6px 20px rgba(99,102,241,0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-vote:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(99,102,241,0.55);
+        }
+
+        /* ======== TOAST NOTIFICATIONS ======== */
+        .toast-container {
+            position: fixed; top: 80px; right: 20px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast {
+            min-width: 300px; padding: 16px 20px;
+            border-radius: 14px; backdrop-filter: blur(20px);
+            display: flex; align-items: center; gap: 12px;
+            font-weight: 600; font-size: 0.92rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            animation: slideIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            border: 1px solid;
+        }
+        .toast.success {
+            background: rgba(16,185,129,0.15);
+            border-color: rgba(16,185,129,0.3);
+            color: #34d399;
+        }
+        .toast.error {
+            background: rgba(239,68,68,0.15);
+            border-color: rgba(239,68,68,0.3);
+            color: #fca5a5;
+        }
+        .toast.warn {
+            background: rgba(245,158,11,0.15);
+            border-color: rgba(245,158,11,0.3);
+            color: #fcd34d;
+        }
+        .toast i { font-size: 1.2rem; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateX(50px); }
+        }
+
+        /* ======== MODALS ======== */
+        .overlay {
+            position: fixed; inset: 0;
+            background: rgba(5, 10, 25, 0.88);
+            backdrop-filter: blur(14px);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal {
+            background: rgba(15, 23, 42, 0.97);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 28px;
+            width: 100%; max-width: 480px;
+            padding: 36px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(99,102,241,0.1);
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .overlay.active .modal { transform: translateY(0) scale(1); }
+
+        .modal-head {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 28px;
+        }
+        .modal-title {
+            font-size: 1.4rem; font-weight: 800;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .modal-title i { color: var(--accent); }
+        .btn-x {
+            background: rgba(255,255,255,0.05);
+            border: none; color: var(--muted);
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-x:hover { background: rgba(239,68,68,0.2); color: var(--danger); transform: rotate(90deg); }
+
+        /* Candidate mini-info inside modal */
+        .cand-mini {
+            display: flex; align-items: center; gap: 16px;
+            background: rgba(99,102,241,0.08);
+            border: 1px solid rgba(99,102,241,0.15);
+            border-radius: 16px; padding: 16px 20px;
+            margin-bottom: 24px;
+        }
+        .cand-mini-avatar {
+            width: 52px; height: 52px; border-radius: 14px; overflow: hidden;
+            background: rgba(30,41,59,1);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .cand-mini-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .cand-mini-avatar i { font-size: 1.4rem; color: var(--muted); }
+        .cand-mini-name { font-size: 1.1rem; font-weight: 700; }
+        .cand-mini-dept { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+
+        /* Form fields */
+        .fgroup { margin-bottom: 18px; }
+        .flabel {
+            display: block; font-size: 0.82rem; font-weight: 700;
+            color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .finput-wrap { position: relative; }
+        .finput-wrap .ficon {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            color: var(--muted); font-size: 1rem;
+        }
+        .finput {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            color: var(--text);
+            padding: 14px 16px 14px 46px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .finput:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(99,102,241,0.15); }
+        .finput.err { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(239,68,68,0.15); }
+        .finput.ok  { border-color: var(--success); box-shadow: 0 0 0 4px rgba(16,185,129,0.15); }
+
+        /* Custom Select UI */
+        .custom-select { position: relative; width: 100%; user-select: none; }
+        .select-selected {
+            background: rgba(255,255,255,0.04);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            color: var(--text); padding: 14px 16px; border-radius: 14px;
+            font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 12px;
+            transition: all 0.2s;
+        }
+        .select-selected.err { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(239,68,68,0.15); }
+        .select-selected:hover { border-color: rgba(255,255,255,0.2); }
+        .select-selected.open { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(99,102,241,0.15); }
+        
+        .select-items {
+            position: absolute; background: rgba(30,41,59,0.98); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; top: 100%; left: 0; right: 0;
+            z-index: 99; margin-top: 8px; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            max-height: 200px; overflow-y: auto; opacity: 0; pointer-events: none;
+            transform: translateY(-10px); transition: all 0.2s;
+        }
+        .select-items.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .select-items div {
+            padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px;
+            transition: background 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .select-items div:last-child { border-bottom: none; }
+        .select-items div:hover { background: rgba(99,102,241,0.25); color: white; }
+        .select-items i { color: var(--accent2); width: 20px; text-align: center; }
+
+        .field-msg {
+            font-size: 0.8rem; margin-top: 6px;
+            display: flex; align-items: center; gap: 6px;
+            display: none;
+        }
+        .field-msg.show { display: flex; }
+        .field-msg.err { color: #fca5a5; }
+        .field-msg.ok  { color: #6ee7b7; }
+
+        /* ID verify indicator */
+        .id-status {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            font-size: 1rem;
+        }
+
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white; border: none;
+            padding: 16px; border-radius: 14px;
+            font-weight: 800; font-size: 1.05rem;
+            cursor: pointer; margin-top: 8px;
+            box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.6); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* ======== CONFIRM MODAL ======== */
+        #confirmModal .modal { max-width: 420px; text-align: center; }
+        .confirm-icon {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: rgba(16,185,129,0.1);
+            border: 2px solid rgba(16,185,129,0.25);
+            color: #34d399; font-size: 2.5rem;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .confirm-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
+        .confirm-sub { color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+        .confirm-cand {
+            font-size: 1.3rem; font-weight: 900;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .confirm-btns { display: flex; gap: 14px; }
+        .btn-another {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text); padding: 14px; border-radius: 14px;
+            font-weight: 700; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-another:hover { background: rgba(255,255,255,0.1); }
+        .btn-confirm-vote {
+            flex: 1;
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white; border: none; padding: 14px; border-radius: 14px;
+            font-weight: 700; cursor: pointer;
+            box-shadow: 0 6px 20px rgba(16,185,129,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-confirm-vote:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(16,185,129,0.5); }
+
+        /* ======== SUCCESS MODAL ======== */
+        #successModal .modal { max-width: 400px; text-align: center; }
+        .success-lottie {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.05));
+            border: 2px solid rgba(16,185,129,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; color: #34d399;
+            margin: 0 auto 24px;
+            animation: pop-in 0.6s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes pop-in { from { transform: scale(0); } to { transform: scale(1); } }
+        .success-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
+        .success-sub { color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+        .success-cand {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.2);
+            padding: 14px; border-radius: 14px; margin-bottom: 24px;
+            font-size: 1.1rem; font-weight: 700; color: #34d399;
+        }
+        .btn-done {
+            width: 100%; background: linear-gradient(135deg, var(--success), #059669);
+            color: white; border: none; padding: 16px; border-radius: 14px;
+            font-weight: 800; font-size: 1.05rem; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ====== NAVBAR ====== -->
+<nav class="navbar">
+    <div class="nav-brand">
+        <div class="nav-logo"><i class="fa-solid fa-check-to-slot"></i></div>
+        P-Election
+    </div>
+    <div class="nav-stats">
+        <span class="nav-chip"><i class="fa-solid fa-users"></i> {{ candidates|length }} Candidates</span>
+    </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<div class="hero">
+    <div class="hero-badge">
+        <span>●</span> Doorashada Gidomiyaha
+    </div>
+    <h1>Dooro Musharaxaaga</h1>
+    <p>majirto cid oganaysa qofka ad tahay .</p>
+</div>
+
+<!-- ====== CANDIDATES GRID ====== -->
+<div class="container">
+    <div class="section-label"><i class="fa-solid fa-users"></i> &nbsp;Dhammaan Musharixiinta</div>
+    <div class="candidates-grid">
+        {% for cand in candidates %}
+        <div class="cand-card">
+            <div class="cand-header">
+                {% if cand.m_image %}
+                    <img src="{{ cand.m_image.url }}" alt="{{ cand.m_name }}" class="cand-image-cover">
+                {% else %}
+                    <div class="cand-placeholder"><i class="fa-solid fa-user-tie"></i></div>
+                {% endif %}
+                <div class="cand-header-overlay"></div>
+            </div>
+            <div class="cand-body">
+                <div class="cand-name">{{ cand.m_name }}</div>
+                <button class="btn-vote"
+                    data-id="{{ cand.id }}"
+                    data-name="{{ cand.m_name|escapejs }}"
+                    data-img="{% if cand.m_image %}{{ cand.m_image.url }}{% endif %}"
+                    onclick="openVoteModal(this)">
+                    <i class="fa-solid fa-check-to-slot"></i> Ucodee
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align:center; padding: 60px; color: var(--muted);">
+            <i class="fa-solid fa-users-slash" style="font-size:3rem; margin-bottom:15px; display:block; opacity:0.4;"></i>
+            Musharax kuma jiro nidaamka hadda.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- ====================================================
+     STEP 1: Vote Entry Modal
+     ==================================================== -->
+<div class="overlay" id="voteModal">
+    <div class="modal">
+        <div class="modal-head">
+            <div class="modal-title">
+                <i class="fa-solid fa-check-to-slot"></i> Codbixin
+            </div>
+            <button class="btn-x" onclick="closeAll()"><i class="fa-solid fa-times"></i></button>
+        </div>
+
+        <!-- Selected Candidate Mini Card -->
+        <div class="cand-mini">
+            <div class="cand-mini-avatar" id="miniAvatar">
+                <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <div>
+                <div class="cand-mini-name" id="miniName">—</div>
+                <div class="cand-mini-dept" id="miniDept">—</div>
+            </div>
+        </div>
+
+        <!-- Vote ID Field -->
+        <div class="fgroup">
+            <label class="flabel"><i class="fa-solid fa-id-card"></i> &nbsp;ID-gaaga Codaynta</label>
+            <div class="finput-wrap">
+                <i class="ficon fa-solid fa-hashtag"></i>
+                <input type="text" id="inputVoteId" class="finput" placeholder="Gali ID-gaaga (e.g. AB12345)" 
+                       oninput="this.value = this.value.toUpperCase();" onblur="verifyId()">
+                <span class="id-status" id="idStatus"></span>
+            </div>
+            <div class="field-msg" id="idMsg"></div>
+        </div>
+
+        <!-- Department -->
+        <div class="fgroup">
+            <label class="flabel"><i class="fa-solid fa-building"></i> &nbsp;Doro Department</label>
+            <div class="custom-select" onclick="toggleSelect('deptDropdown', 'deptSelected')">
+                <div class="select-selected" id="deptSelected">
+                    <i class="fa-solid fa-layer-group" style="color: var(--muted);"></i>
+                    <span id="deptLabel">— Department —</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left:auto; color: var(--muted);"></i>
+                </div>
+                <div class="select-items" id="deptDropdown">
+                    {% for dept in departments %}
+                    <div onclick="setSelect('dept', '{{ dept.id }}', '{{ dept.d_name|escapejs }}', 'fa-building')">
+                        <i class="fa-solid fa-building"></i> {{ dept.d_name }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <input type="hidden" id="inputDept" value="">
+            <div class="field-msg" id="deptMsg"></div>
+        </div>
+
+        <!-- Gender -->
+        <div class="fgroup">
+            <label class="flabel"><i class="fa-solid fa-venus-mars"></i> &nbsp;Jinsigaaga</label>
+            <div class="custom-select" onclick="toggleSelect('genderDropdown', 'genderSelected')">
+                <div class="select-selected" id="genderSelected">
+                    <i class="fa-solid fa-person-half-dress" style="color: var(--muted);"></i>
+                    <span id="genderLabel">— Dooro Jinsigaaga —</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left:auto; color: var(--muted);"></i>
+                </div>
+                <div class="select-items" id="genderDropdown">
+                    <div onclick="setSelect('gender', 'lab', 'Lab (Male)', 'fa-mars')">
+                        <i class="fa-solid fa-mars"></i> Lab 
+                    </div>
+                    <div onclick="setSelect('gender', 'dhadig', 'DHadig (Female)', 'fa-venus')">
+                        <i class="fa-solid fa-venus"></i> DHadig 
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="inputGender" value="">
+            <div class="field-msg" id="genderMsg"></div>
+        </div>
+
+        <button class="btn-submit" id="btnProceed" onclick="proceedToConfirm()">
+            <i class="fa-solid fa-arrow-right"></i> DhibCodka
+        </button>
+    </div>
+</div>
+
+<!-- ====================================================
+     STEP 2: Confirmation Modal
+     ==================================================== -->
+<div class="overlay" id="confirmModal">
+    <div class="modal">
+        <div class="confirm-icon"><i class="fa-solid fa-shield-check"></i></div>
+        <div class="confirm-title">Ma hubtaa?</div>
+        <div class="confirm-sub">
+            Waxaad u codaynaysaa<br>
+            <span class="confirm-cand" id="confirmCandName"></span>
+        </div>
+        <div class="confirm-btns">
+            <button class="btn-another" onclick="selectAnother()">
+                <i class="fa-solid fa-rotate-left"></i> &nbsp;Dooro mid kale
+            </button>
+            <button class="btn-confirm-vote" onclick="submitVote()">
+                <i class="fa-solid fa-check-circle"></i> &nbsp;Assaga, Ucodee!
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================
+     STEP 3: Success Modal
+     ==================================================== -->
+<div class="overlay" id="successModal">
+    <div class="modal">
+        <div class="success-lottie"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="success-title">Waad Codeysay!</div>
+        <div class="success-sub">Mahadsanid codbixintaada, waa la diiwaan geliyay.</div>
+        <div class="success-cand" id="successCandName"></div>
+        <button class="btn-done" onclick="closeAll(); window.location.reload();">
+            <i class="fa-solid fa-check"></i> &nbsp;TXN
+        </button>
+    </div>
+</div>
+
+<script>
+    // ─── Custom Select Logic ─────────────────────────────────
+    function toggleSelect(id, btnId) {
+        document.querySelectorAll('.select-items').forEach(el => {
+            if (el.id !== id) el.classList.remove('show');
+        });
+        document.querySelectorAll('.select-selected').forEach(el => {
+            if (el.id !== btnId) el.classList.remove('open');
+        });
+        document.getElementById(id).classList.toggle('show');
+        document.getElementById(btnId).classList.toggle('open');
+    }
+
+    function setSelect(type, value, label, iconClass) {
+        document.getElementById('input' + (type === 'dept' ? 'Dept' : 'Gender')).value = value;
+        document.getElementById(type + 'Label').textContent = label;
+        const iconEl = document.getElementById(type + 'Selected').querySelector('i:first-child');
+        iconEl.className = `fa-solid ${iconClass}`;
+        iconEl.style.color = "var(--accent2)";
+        document.getElementById(type + 'Selected').style.color = "#fff";
+        document.getElementById(type + 'Selected').classList.remove('err');
+        document.getElementById(type + 'Msg').classList.remove('show','err');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-select')) {
+            document.querySelectorAll('.select-items').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.select-selected').forEach(el => el.classList.remove('open'));
+        }
+    });
+
+    // ─── State ────────────────────────────────────────────────
+    let selectedCandidateId   = null;
+    let selectedCandidateName = '';
+    let idVerified            = false;
+
+    // ─── Toast ───────────────────────────────────────────────
+    function showToast(type, message) {
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', warn: 'fa-triangle-exclamation' };
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.error}"></i> ${message}`;
+        document.getElementById('toastContainer').appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'fadeOut 0.4s ease forwards';
+            setTimeout(() => toast.remove(), 400);
+        }, 4000);
+    }
+
+    // ─── Modal helpers ────────────────────────────────────────
+    function openOverlay(id) { document.getElementById(id).classList.add('active'); }
+    function closeOverlay(id) { document.getElementById(id).classList.remove('active'); }
+    function closeAll() {
+        ['voteModal','confirmModal','successModal'].forEach(closeOverlay);
+    }
+
+    // Close on backdrop click
+    document.querySelectorAll('.overlay').forEach(o => {
+        o.addEventListener('click', e => { if (e.target === o) closeAll(); });
+    });
+
+    // ─── Open Vote Modal ─────────────────────────────────────
+    function openVoteModal(btn) {
+        selectedCandidateId   = btn.dataset.id;
+        selectedCandidateName = btn.dataset.name;
+
+        // Populate mini card
+        document.getElementById('miniName').textContent = btn.dataset.name;
+        document.getElementById('miniDept').textContent = btn.dataset.dept;
+        const avatarEl = document.getElementById('miniAvatar');
+        if (btn.dataset.img) {
+            avatarEl.innerHTML = `<img src="${btn.dataset.img}" alt="${btn.dataset.name}">`;
+        } else {
+            avatarEl.innerHTML = `<i class="fa-solid fa-user-tie"></i>`;
+        }
+
+        // Reset ID field only (keep dept/gender if user is switching candidate)
+        document.getElementById('inputVoteId').value = '';
+        resetIdField();
+
+        openOverlay('voteModal');
+    }
+
+    // ─── Verify ID (on blur) ─────────────────────────────────
+    function setIdState(state, msg) {
+        const input  = document.getElementById('inputVoteId');
+        const status = document.getElementById('idStatus');
+        const msgEl  = document.getElementById('idMsg');
+
+        input.classList.remove('err','ok');
+        msgEl.classList.remove('show','err','ok');
+
+        if (state === 'ok') {
+            input.classList.add('ok');
+            status.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#34d399;"></i>';
+            idVerified = true;
+        } else if (state === 'err') {
+            input.classList.add('err');
+            status.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i>';
+            msgEl.innerHTML  = `<i class="fa-solid fa-circle-exclamation"></i> ${msg}`;
+            msgEl.classList.add('show','err');
+            idVerified = false;
+        } else {
+            status.innerHTML = '';
+            idVerified = false;
+        }
+    }
+
+    function resetIdField() {
+        setIdState('');
+        document.getElementById('idStatus').innerHTML = '';
+    }
+
+    async function verifyId() {
+        const val = document.getElementById('inputVoteId').value.trim().toUpperCase();
+        if (!val) { resetIdField(); return; }
+
+        // Show spinner
+        document.getElementById('idStatus').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="color:#818cf8;"></i>';
+
+        const csrfToken = '{{ csrf_token }}';
+        try {
+            const res = await fetch('/vote/verify-id/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify({ vote_id: val })
+            });
+            const data = await res.json();
+            if (data.valid) {
+                setIdState('ok', '');
+            } else {
+                setIdState('err', data.message);
+                if (data.error === 'used') {
+                    showToast('warn', data.message);
+                } else {
+                    showToast('error', data.message);
+                }
+            }
+        } catch {
+            setIdState('err', 'Xiriirka server-ka dhacay. Dib u isku day.');
+        }
+    }
+
+    // ─── Proceed to Confirm ───────────────────────────────────
+    function proceedToConfirm() {
+        let valid = true;
+
+        // Validate ID
+        if (!idVerified) {
+            setIdState('err', 'Fadlan xaqiiji ID-gaaga horta.');
+            showToast('error', 'ID-ga waa in la xaqiijiyaa.');
+            valid = false;
+        }
+
+        // Validate Department
+        const dept = document.getElementById('inputDept');
+        const deptMsg = document.getElementById('deptMsg');
+        const deptBox = document.getElementById('deptSelected');
+        deptBox.classList.remove('err');
+        deptMsg.classList.remove('show','err');
+        if (!dept.value) {
+            deptBox.classList.add('err');
+            deptMsg.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Waaxda dooro.';
+            deptMsg.classList.add('show','err');
+            valid = false;
+        }
+
+        // Validate Gender
+        const gender = document.getElementById('inputGender');
+        const genderMsg = document.getElementById('genderMsg');
+        const genderBox = document.getElementById('genderSelected');
+        genderBox.classList.remove('err');
+        genderMsg.classList.remove('show','err');
+        if (!gender.value) {
+            genderBox.classList.add('err');
+            genderMsg.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Jinsiga dooro.';
+            genderMsg.classList.add('show','err');
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        // Show confirm
+        document.getElementById('confirmCandName').textContent = selectedCandidateName;
+        closeOverlay('voteModal');
+        openOverlay('confirmModal');
+    }
+
+    // ─── Select Another ───────────────────────────────────────
+    function selectAnother() {
+        // Close confirm, reopen vote modal — keeping dept/gender intact
+        closeOverlay('confirmModal');
+
+        // Only reset ID verification, keep other fields
+        document.getElementById('inputVoteId').value = '';
+        resetIdField();
+
+        // Allow user to pick a different candidate by going back
+        // We also scroll to the candidates section
+        closeAll();
+        showToast('warn', 'Dooro musharax kale oo taabo badhanka "Codi".');
+    }
+
+    // ─── Final Vote Submit ────────────────────────────────────
+    async function submitVote() {
+        document.querySelector('.btn-confirm-vote').disabled = true;
+        document.querySelector('.btn-confirm-vote').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> &nbsp;Diiwaan gelinta...';
+
+        const formData = new FormData();
+        formData.append('vote_id', document.getElementById('inputVoteId').value.trim().toUpperCase());
+        formData.append('candidate_id', selectedCandidateId);
+        formData.append('department', document.getElementById('inputDept').value);
+        formData.append('gender', document.getElementById('inputGender').value);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        try {
+            const res = await fetch('/vote/submit/', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (data.success) {
+                document.getElementById('successCandName').textContent =
+                    `Waxaad u codeysay: ${data.candidate_name}`;
+                closeOverlay('confirmModal');
+                openOverlay('successModal');
+                showToast('success', `Codbixintaada si guul leh ayaa loo diiwaan geliyay!`);
+            } else {
+                closeOverlay('confirmModal');
+                openOverlay('voteModal');
+                // Show errors
+                if (data.errors) {
+                    if (data.errors.id) { setIdState('err', data.errors.id); showToast('error', data.errors.id); }
+                    if (data.errors.general) { showToast('error', data.errors.general); }
+                }
+            }
+        } catch {
+            showToast('error', 'Khalad dhacay. Dib u isku day.');
+            closeOverlay('confirmModal');
+        } finally {
+            const btn = document.querySelector('.btn-confirm-vote');
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> &nbsp;Haa, Codi!';
+            }
+        }
+    }
+</script>
+</body>
+</html>

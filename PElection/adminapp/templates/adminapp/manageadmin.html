@@ -1,0 +1,512 @@
+{% extends 'adminapp/base.html' %}
+
+{% block title %}Manage Admins | E-Election{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .btn-add {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+    }
+
+    /* Summary Cards */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-bottom: 30px;
+    }
+
+    .summary-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        background: rgba(30, 41, 59, 0.9);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sc-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-right: 20px;
+    }
+
+    .icon-total { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .icon-super { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .icon-staff { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .sc-info h3 {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .sc-info p {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-top: 5px;
+    }
+
+    /* Table Section */
+    .table-container {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        overflow-x: auto;
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .premium-table th {
+        text-align: left;
+        padding: 15px;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .premium-table td {
+        padding: 15px;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        vertical-align: middle;
+    }
+
+    .premium-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .premium-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .role-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .role-super {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .role-staff {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin: 0 5px;
+    }
+
+    .btn-edit {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .btn-edit:hover { background: #10b981; color: white; }
+
+    .btn-delete {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    .btn-delete:hover { background: #ef4444; color: white; }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+
+    .modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal-container {
+        background: rgba(30, 41, 59, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        width: 100%;
+        max-width: 500px;
+        padding: 30px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        transform: translateY(20px);
+        transition: transform 0.3s;
+    }
+
+    .modal-overlay.active .modal-container {
+        transform: translateY(0);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .modal-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+    .form-control {
+        width: 100%;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        padding: 12px 15px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+    }
+    .form-control:focus { outline: none; border-color: #f59e0b; }
+    
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        cursor: pointer;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    /* Delete specific */
+    .delete-text { text-align: center; color: var(--text-secondary); margin-bottom: 20px; font-size: 1.1rem; }
+    .delete-text strong { color: var(--text-primary); font-size: 1.2rem; }
+    .actions-flex { display: flex; gap: 15px; }
+    .btn-cancel { flex: 1; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; cursor: pointer; }
+    .btn-confirm-delete { flex: 1; background: #ef4444; color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Manage Administrators</h1>
+    <button class="btn-add" onclick="openModal('addModal')">
+        <i class="fa-solid fa-user-shield"></i> Add New Admin
+    </button>
+</div>
+
+<div class="summary-grid">
+    <div class="summary-card">
+        <div class="sc-icon icon-total"><i class="fa-solid fa-users-gear"></i></div>
+        <div class="sc-info">
+            <h3>Total Admins</h3>
+            <p>{{ total_admins }}</p>
+        </div>
+    </div>
+    <div class="summary-card">
+        <div class="sc-icon icon-super"><i class="fa-solid fa-crown"></i></div>
+        <div class="sc-info">
+            <h3>Superusers</h3>
+            <p>{{ superusers }}</p>
+        </div>
+    </div>
+    <div class="summary-card">
+        <div class="sc-icon icon-staff"><i class="fa-solid fa-user-check"></i></div>
+        <div class="sc-info">
+            <h3>Regular Staff</h3>
+            <p>{{ staff }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="premium-table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Email Address</th>
+                <th>Role</th>
+                <th>Joined Date</th>
+                <th style="text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in admins %}
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-user" style="color: var(--text-secondary);"></i>
+                        </div>
+                        <span style="font-weight: 600; color: var(--text-primary);">{{ user.username }}</span>
+                    </div>
+                </td>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {% if user.is_superuser %}
+                        <span class="role-badge role-super"><i class="fa-solid fa-crown"></i> Superuser</span>
+                    {% else %}
+                        <span class="role-badge role-staff"><i class="fa-solid fa-user-shield"></i> Admin Staff</span>
+                    {% endif %}
+                </td>
+                <td style="color: var(--text-secondary);">{{ user.date_joined|date:"M d, Y" }}</td>
+                <td style="display: flex; justify-content: center;">
+                    <button class="action-btn btn-edit" title="Edit Admin" 
+                            onclick="openEditModal('{{ user.id }}', '{{ user.username|escapejs }}', '{{ user.first_name|escapejs }}', '{{ user.last_name|escapejs }}', '{{ user.email|escapejs }}', {{ user.is_superuser|lower }})">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    {% if request.user.id != user.id %}
+                    <button class="action-btn btn-delete" title="Delete Admin" onclick="openDeleteModal('{{ user.id }}', '{{ user.username|escapejs }}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    No administrators found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle"><i class="fa-solid fa-user-shield" style="color: #f59e0b;"></i> Add Admin</h2>
+            <button class="btn-close" onclick="closeModal('addModal')"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <form action="" method="POST" id="adminForm">
+            {% csrf_token %}
+            <input type="hidden" name="action" id="formAction" value="add">
+            <input type="hidden" name="user_id" id="userId" value="">
+            
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" id="username" class="form-control" placeholder="admin_user" required>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" name="first_name" id="first_name" class="form-control" placeholder="John">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Doe">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="admin@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Password <span id="passHelp" style="color: var(--text-secondary); font-weight: normal; font-size: 0.8rem;">(Required)</span></label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-container">
+                    <input type="checkbox" name="is_superuser" id="is_superuser" style="width: 18px; height: 18px; accent-color: #f59e0b;">
+                    Make this user a Superuser (Full Access)
+                </label>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtnText">Save Administrator</button>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-container" style="max-width: 400px; text-align: center;">
+        <div style="width: 70px; height: 70px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px solid rgba(239, 68, 68, 0.2);">
+            <i class="fa-solid fa-user-xmark"></i>
+        </div>
+        <h2 style="color: white; margin-bottom: 10px;">Remove Admin?</h2>
+        <p class="delete-text">Ma hubtaa in aad nidaamka ka saarto maamulaha <br><strong id="delAdminName"></strong>?</p>
+        
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="user_id" id="delUserId" value="">
+            <div class="actions-flex">
+                <button type="button" class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+                <button type="submit" class="btn-confirm-delete">Yes, Remove</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+        
+        // Reset form if opening Add Modal directly
+        if (id === 'addModal' && event && event.currentTarget.classList.contains('btn-add')) {
+            document.getElementById('adminForm').reset();
+            document.getElementById('formAction').value = 'add';
+            document.getElementById('userId').value = '';
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-shield" style="color: #f59e0b;"></i> Add Admin';
+            document.getElementById('submitBtnText').textContent = 'Save Administrator';
+            
+            document.getElementById('password').required = true;
+            document.getElementById('passHelp').textContent = '(Required)';
+        }
+    }
+    
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function openEditModal(id, username, fname, lname, email, is_super) {
+        document.getElementById('formAction').value = 'edit';
+        document.getElementById('userId').value = id;
+        
+        document.getElementById('username').value = username;
+        document.getElementById('first_name').value = fname;
+        document.getElementById('last_name').value = lname;
+        document.getElementById('email').value = email;
+        document.getElementById('is_superuser').checked = is_super;
+        
+        document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-pen" style="color: #f59e0b;"></i> Edit Admin';
+        document.getElementById('submitBtnText').textContent = 'Update Administrator';
+        
+        // Password is optional for edit
+        document.getElementById('password').required = false;
+        document.getElementById('passHelp').textContent = '(Leave blank to keep current password)';
+        
+        openModal('addModal');
+    }
+
+    function openDeleteModal(id, name) {
+        document.getElementById('delUserId').value = id;
+        document.getElementById('delAdminName').textContent = name;
+        openModal('deleteModal');
+    }
+
+    // Close on click outside
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal(modal.id);
+            }
+        });
+    });
+</script>
+{% endblock %}
