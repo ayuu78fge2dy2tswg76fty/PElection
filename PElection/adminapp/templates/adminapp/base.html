@@ -339,10 +339,13 @@
                     <i class="fa-regular fa-bell"></i>
                 </button>
                 <div class="user-profile">
-                    <div class="avatar">A</div>
-                    <span class="user-name">Admin User</span>
+                    <div class="avatar">{{ request.user.username|first|default:"A"|upper }}</div>
+                    <span class="user-name">{{ request.user.username|default:"Admin User" }}</span>
                     <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: var(--text-secondary);"></i>
                 </div>
+                <a href="{% url 'logout' %}" class="toggle-btn" title="Logout" aria-label="Logout" style="text-decoration: none;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
             </div>
         </header>
 

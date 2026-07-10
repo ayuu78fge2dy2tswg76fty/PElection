@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.utils.http import url_has_allowed_host_and_scheme
 from Codbixiye.models import codbixiye_DB
 from Musharax.models import musharax_DB
 from voiteID.models import ID_DB
@@ -7,6 +10,39 @@ from Depadrments.models import depadrments_DB
 
 from django.contrib.auth.models import User as AdminUser
 
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        identifier = request.POST.get('identifier', '').strip()
+        password = request.POST.get('password', '')
+        user = authenticate(request, username=identifier, password=password)
+
+        if user is not None and user.is_active and (user.is_staff or user.is_superuser):
+            login(request, user)
+            messages.success(request, f"Ku soo dhawoow, {user.username}.")
+            next_url = request.POST.get('next') or request.GET.get('next')
+            if next_url and url_has_allowed_host_and_scheme(
+                next_url,
+                allowed_hosts={request.get_host()},
+                require_https=request.is_secure(),
+            ):
+                return redirect(next_url)
+            return redirect('dashboard')
+
+        messages.error(request, 'Login-ka wuu fashilmay. Hubi username/email iyo password-ka.')
+
+    return render(request, 'adminapp/login.html')
+
+
+def logout_view(request):
+    logout(request)
+    messages.info(request, 'Waad ka baxday account-ka.')
+    return redirect('login')
+
+@login_required(login_url='login')
 def dashboard_view(request):
     # --- Core Counts ---
     total_voters = codbixiye_DB.objects.count()
@@ -88,6 +124,7 @@ def dashboard_view(request):
     }
     return render(request, 'adminapp/dashboard.html', context)
 
+@login_required(login_url='login')
 def musharax_view(request):
     candidates = musharax_DB.objects.all().order_by('-m_joined')
     departments = depadrments_DB.objects.all()
@@ -230,6 +267,7 @@ def musharax_view(request):
     }
     return render(request, 'adminapp/musharax.html', context)
 
+@login_required(login_url='login')
 def voiteid_view(request):
     if request.method == "POST":
         action = request.POST.get('action')
@@ -342,6 +380,7 @@ def voiteid_view(request):
     }
     return render(request, 'adminapp/voiteid.html', context)
 
+@login_required(login_url='login')
 def codbixiye_view(request):
     voters = codbixiye_DB.objects.all().order_by('-id')
     
@@ -360,6 +399,7 @@ def codbixiye_view(request):
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
+@login_required(login_url='login')
 def manageadmin_view(request):
     if request.method == "POST":
         action = request.POST.get('action')
