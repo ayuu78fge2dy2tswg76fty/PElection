@@ -461,3 +461,58 @@ def manageadmin_view(request):
         'staff': staff,
     }
     return render(request, 'adminapp/manageadmin.html', context)
+
+@login_required(login_url='login')
+def departments_view(request):
+    if request.method == "POST":
+        action = request.POST.get('action')
+        
+        if action == 'add':
+            d_name = request.POST.get('d_name')
+            if d_name:
+                depadrments_DB.objects.create(d_name=d_name)
+                messages.success(request, 'Department successfully added!')
+            return redirect('departments')
+            
+        elif action == 'edit':
+            dept_id = request.POST.get('dept_id')
+            dept_obj = get_object_or_404(depadrments_DB, id=dept_id)
+            
+            d_name = request.POST.get('d_name')
+            if d_name:
+                dept_obj.d_name = d_name
+                dept_obj.save()
+                messages.success(request, 'Department successfully updated!')
+            return redirect('departments')
+            
+        elif action == 'delete':
+            dept_id = request.POST.get('dept_id')
+            dept_obj = get_object_or_404(depadrments_DB, id=dept_id)
+            dept_obj.delete()
+            messages.success(request, 'Department successfully deleted!')
+            return redirect('departments')
+
+    departments_qs = depadrments_DB.objects.all().order_by('-id')
+    total_departments = departments_qs.count()
+    
+    departments_data = []
+    for dept in departments_qs:
+        total_voters = dept.voters.count()
+        male_voters = dept.voters.filter(c_gender='lab').count()
+        female_voters = dept.voters.filter(c_gender='dhadig').count()
+        candidates = dept.musharax_db_set.count()
+        
+        departments_data.append({
+            'id': dept.id,
+            'd_name': dept.d_name,
+            'total_voters': total_voters,
+            'male_voters': male_voters,
+            'female_voters': female_voters,
+            'candidates_count': candidates,
+        })
+    
+    context = {
+        'departments': departments_data,
+        'total_departments': total_departments,
+    }
+    return render(request, 'adminapp/departments.html', context)

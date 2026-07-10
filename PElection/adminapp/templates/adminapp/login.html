@@ -4,314 +4,275 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | P-Election</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #07111f;
-            --panel: rgba(15, 23, 42, 0.8);
-            --panel-border: rgba(148, 163, 184, 0.16);
-            --text: #e2e8f0;
-            --muted: #94a3b8;
-            --accent: #22c55e;
-            --accent-2: #38bdf8;
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --surface-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7);
         }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }
-        body {
-            margin: 0;
-            min-height: 100vh;
+            box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            color: var(--text);
-            background:
-                radial-gradient(circle at top left, rgba(34, 197, 94, 0.18), transparent 30%),
-                radial-gradient(circle at top right, rgba(56, 189, 248, 0.16), transparent 25%),
-                linear-gradient(135deg, #050816 0%, #0f172a 45%, #111827 100%);
-            display: grid;
-            place-items: center;
-            padding: 24px;
-            text-align: center;
         }
-        .shell {
-            width: 100%;
-            max-width: 600px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            align-items: center;
-            justify-items: center;
-        }
-        .hero,
-        .card {
-            border: 1px solid var(--panel-border);
-            background: var(--panel);
-            backdrop-filter: blur(18px);
-            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
-            border-radius: 28px;
-            width: 100%;
-            max-width: 500px;
-        }
-        .hero {
-            padding: 42px;
-            min-height: auto;
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            position: relative;
             overflow: hidden;
-            position: relative;
-            text-align: center;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15), transparent 25%);
         }
-        .hero::after {
-            content: "";
-            position: absolute;
-            inset: auto -80px -90px auto;
-            width: 260px;
-            height: 260px;
-            background: radial-gradient(circle, rgba(34, 197, 94, 0.28), transparent 70%);
-            filter: blur(8px);
-            display: none;
-        }
-        .brand {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #f8fafc;
-            justify-content: center;
-        }
-        .brand-badge {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            display: grid;
-            place-items: center;
-            color: #fff;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
-        }
-        .hero h1 {
-            font-size: clamp(2rem, 4vw, 3rem);
-            line-height: 1.03;
-            margin: 24px 0 12px;
-            text-align: center;
+
+        .login-container {
             width: 100%;
-        }
-        .hero p {
-            margin: 0 auto;
-            max-width: 40ch;
-            color: var(--muted);
-            line-height: 1.7;
-            font-size: 1rem;
+            max-width: 420px;
+            padding: 40px;
+            background: var(--surface-color);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
             text-align: center;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
-            margin-top: 28px;
             position: relative;
-            z-index: 1;
-            width: 100%;
+            z-index: 10;
+            animation: slideUp 0.5s ease-out forwards;
         }
-        .stat {
-            padding: 16px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            text-align: center;
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .stat strong {
-            display: block;
-            font-size: 1.3rem;
-            margin-bottom: 4px;
+
+        .logo-container {
+            margin-bottom: 25px;
         }
-        .stat span {
-            color: var(--muted);
-            font-size: 0.88rem;
+
+        .logo-icon {
+            font-size: 3.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 10px rgba(99, 102, 241, 0.3));
         }
-        .card {
-            padding: 34px;
-            text-align: center;
+
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
         }
-        .card h2 {
-            margin: 0 0 8px;
-            font-size: 1.7rem;
-            text-align: center;
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
         }
-        .card .sub {
-            color: var(--muted);
-            margin-bottom: 24px;
-            line-height: 1.6;
-            text-align: center;
-        }
+
         .messages {
-            display: grid;
-            gap: 10px;
-            margin-bottom: 18px;
-            justify-items: center;
+            margin-bottom: 20px;
         }
+
         .message {
-            padding: 12px 14px;
-            border-radius: 14px;
-            font-size: 0.92rem;
-            border: 1px solid transparent;
-            text-align: center;
-            width: 100%;
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
         .message.success {
-            background: rgba(34, 197, 94, 0.12);
-            border-color: rgba(34, 197, 94, 0.24);
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
+        
         .message.error {
-            background: rgba(248, 113, 113, 0.12);
-            border-color: rgba(248, 113, 113, 0.24);
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
+
         .message.info {
-            background: rgba(56, 189, 248, 0.12);
-            border-color: rgba(56, 189, 248, 0.24);
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
-        .field {
-            margin-bottom: 16px;
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
             text-align: left;
         }
-        .field label {
+
+        .input-group label {
             display: block;
             margin-bottom: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            text-align: left;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .input-wrap {
-            position: relative;
+
+        .input-field {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 14px 15px 14px 45px;
+            border-radius: 14px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
-        .input-wrap i {
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .input-icon {
             position: absolute;
             left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #64748b;
+            bottom: 15px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            transition: color 0.3s;
         }
-        .field input {
+
+        .input-field:focus + .input-icon,
+        .input-field:not(:placeholder-shown) + .input-icon {
+            color: var(--accent-color);
+        }
+
+        .btn-login {
             width: 100%;
-            border: 1px solid rgba(148, 163, 184, 0.22);
-            background: rgba(15, 23, 42, 0.72);
-            color: var(--text);
-            border-radius: 16px;
-            padding: 14px 16px 14px 46px;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .field input:focus {
-            border-color: rgba(56, 189, 248, 0.65);
-            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.14);
-        }
-        .field input::placeholder {
-            color: #64748b;
-        }
-        .actions {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 14px;
-            margin-top: 22px;
-        }
-        .btn {
+            background: var(--accent-gradient);
+            color: white;
             border: none;
+            padding: 15px;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 600;
             cursor: pointer;
-            border-radius: 16px;
-            padding: 14px 18px;
-            font-weight: 700;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
         }
-        .btn-primary {
-            flex: 0 1 auto;
-            color: #04111a;
-            background: linear-gradient(135deg, #7cfdac, #38bdf8);
-            box-shadow: 0 12px 30px rgba(56, 189, 248, 0.22);
-            padding: 14px 40px;
-        }
-        .btn-primary:hover {
+
+        .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 16px 40px rgba(56, 189, 248, 0.35);
+            box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
         }
-        .btn-primary:active {
+
+        .btn-login:active {
             transform: translateY(0);
         }
-        .hint {
-            margin-top: 18px;
-            color: var(--muted);
-            font-size: 0.88rem;
-            line-height: 1.6;
-            text-align: center;
+        
+        /* Floating particles effect in background */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+            filter: blur(40px);
+            z-index: 1;
         }
-        .hint strong {
-            color: #f8fafc;
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
         }
-        @media (max-width: 920px) {
-            .shell {
-                grid-template-columns: 1fr;
-            }
-            .hero {
-                min-height: auto;
-            }
-            .stats {
-                grid-template-columns: 1fr;
-            }
+        .circle-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            right: -150px;
         }
     </style>
 </head>
 <body>
-    <div class="shell">
-  
-        <section class="card">
-            <h2>Sign in</h2>
-            {% if messages %}
-                <div class="messages">
-                    {% for message in messages %}
-                        <div class="message {{ message.tags }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <form method="post">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}">
-                <div class="field">
-                    <label for="identifier">Username or Email</label>
-                    <div class="input-wrap">
-                        <i class="fa-regular fa-user"></i>
-                        <input type="text" id="identifier" name="identifier" placeholder="admin or admin@example.com" autocomplete="username" required>
+    <!-- Background elements -->
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+
+    <div class="login-container">
+        <div class="logo-container">
+            <i class="fa-solid fa-check-to-slot logo-icon"></i>
+        </div>
+        
+        <h1 class="login-title">P-Election Admin</h1>
+        <p class="login-subtitle">Sign in to manage the election system</p>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {% if message.tags == 'success' %}
+                            <i class="fa-solid fa-circle-check"></i>
+                        {% elif message.tags == 'error' %}
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-info"></i>
+                        {% endif %}
+                        {{ message }}
                     </div>
-                </div>
-                <div class="field">
-                    <label for="password">Password</label>
-                    <div class="input-wrap">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" required>
-                    </div>
-                </div>
-                <div class="actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa-solid fa-right-to-bracket"></i>
-                        Login
-                    </button>
-                </div>
-            </form>
-     
-        </section>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            
+            <div class="input-group">
+                <label for="identifier">Username / Email</label>
+                <input type="text" id="identifier" name="identifier" class="input-field" placeholder=" " required autocomplete="username">
+                <i class="fa-regular fa-user input-icon"></i>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="input-field" placeholder=" " required autocomplete="current-password">
+                <i class="fa-solid fa-lock input-icon"></i>
+            </div>
+            
+            <button type="submit" class="btn-login">
+                Login <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+        </form>
     </div>
 </body>
 </html>

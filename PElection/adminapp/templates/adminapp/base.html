@@ -282,42 +282,49 @@
 
         <ul class="nav-links">
             <li class="nav-item">
-                <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
+                <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                     <i class="fa-solid fa-chart-pie nav-icon"></i>
                     <span class="nav-text">Dashboard</span>
                     <span class="tooltip">Dashboard</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/codbixiye/" class="nav-link {% if request.path == '/codbixiye/' %}active{% endif %}">
+                <a href="{% url 'codbixiye' %}" class="nav-link {% if request.resolver_match.url_name == 'codbixiye' %}active{% endif %}">
                     <i class="fa-solid fa-users nav-icon"></i>
                     <span class="nav-text">Codbixiye</span>
                     <span class="tooltip">Codbixiye</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/manageadmin/" class="nav-link {% if request.path == '/manageadmin/' %}active{% endif %}">
+                <a href="{% url 'manageadmin' %}" class="nav-link {% if request.resolver_match.url_name == 'manageadmin' %}active{% endif %}">
                     <i class="fa-solid fa-user-shield nav-icon"></i>
                     <span class="nav-text">Manage Admin</span>
                     <span class="tooltip">Manage Admin</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/musharax/" class="nav-link {% if request.path == '/musharax/' %}active{% endif %}">
+                <a href="{% url 'musharax' %}" class="nav-link {% if request.resolver_match.url_name == 'musharax' %}active{% endif %}">
                     <i class="fa-solid fa-user-tie nav-icon"></i>
                     <span class="nav-text">Musharax</span>
                     <span class="tooltip">Musharax</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/voiteid/" class="nav-link {% if request.path == '/voiteid/' %}active{% endif %}">
+                <a href="{% url 'voiteid' %}" class="nav-link {% if request.resolver_match.url_name == 'voiteid' %}active{% endif %}">
                     <i class="fa-solid fa-id-card nav-icon"></i>
                     <span class="nav-text">Vote ID</span>
                     <span class="tooltip">Vote ID</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/vote/" target="_blank" class="nav-link">
+                <a href="{% url 'departments' %}" class="nav-link {% if request.resolver_match.url_name == 'departments' %}active{% endif %}">
+                    <i class="fa-solid fa-building nav-icon"></i>
+                    <span class="nav-text">Departments</span>
+                    <span class="tooltip">Departments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'codee' %}" target="_blank" class="nav-link">
                     <i class="fa-solid fa-check-to-slot nav-icon" style="color: #10b981;"></i>
                     <span class="nav-text" style="color: #10b981;">Tag Codaynta</span>
                     <span class="tooltip">Tag Codaynta</span>

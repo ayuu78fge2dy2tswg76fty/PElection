@@ -9,4 +9,5 @@ urlpatterns = [
     path('voiteid/', views.voiteid_view, name='voiteid'),
     path('codbixiye/', views.codbixiye_view, name='codbixiye'),
     path('manageadmin/', views.manageadmin_view, name='manageadmin'),
+    path('departments/', views.departments_view, name='departments'),
 ]
