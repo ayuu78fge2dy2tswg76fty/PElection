@@ -737,7 +737,7 @@
 
         const csrfToken = '{{ csrf_token }}';
         try {
-            const res = await fetch('/vote/verify-id/', {
+            const res = await fetch('/verify-id/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
                 body: JSON.stringify({ vote_id: val })
@@ -831,7 +831,7 @@
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
         try {
-            const res = await fetch('/vote/submit/', { method: 'POST', body: formData });
+            const res = await fetch('/submit/', { method: 'POST', body: formData });
             const data = await res.json();
 
             if (data.success) {
