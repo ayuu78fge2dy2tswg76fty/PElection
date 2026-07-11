@@ -161,16 +161,22 @@ def musharax_view(request):
             
             new_image = request.FILES.get('m_image')
             if new_image:
+                # Only replace image if a new one is uploaded
                 candidate.m_image = new_image
+            # If no new image uploaded, keep the existing m_image field as-is
             
-            candidate.save()
+            # Use update_fields to avoid re-validating the unchanged image file
+            update_fields = ['m_name', 'm_email', 'm_gender', 'm_depadrments', 'm_if_allowed']
+            if new_image:
+                update_fields.append('m_image')
+            candidate.save(update_fields=update_fields)
             return redirect('musharax')
 
         elif action == 'toggle_allow':
             candidate_id = request.POST.get('candidate_id')
             candidate = get_object_or_404(musharax_DB, id=candidate_id)
             candidate.m_if_allowed = not candidate.m_if_allowed
-            candidate.save()
+            candidate.save(update_fields=['m_if_allowed'])
             return redirect('musharax')
 
         elif action == 'delete':

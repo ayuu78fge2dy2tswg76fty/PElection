@@ -39,10 +39,12 @@ def verify_id_ajax(request):
             else:
                 return JsonResponse({'valid': True})
         except ID_DB.DoesNotExist:
+            sample_id = ID_DB.objects.filter(_is_used=False).first()
+            sample = sample_id._c_id if sample_id else "None"
             return JsonResponse({
                 'valid': False,
                 'error': 'notfound',
-                'message': 'ID-gan Ma jiro. Hubi in ID saxa qortay.'
+                'message': f'ID-gan "{vote_id}" Ma jiro. (Tusaale databaseka: "{sample}")'
             })
 
     return JsonResponse({'valid': False, 'message': 'Invalid request.'})

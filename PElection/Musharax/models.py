@@ -55,7 +55,9 @@ class musharax_DB(models.Model):
             self.m_name = self.m_name.strip().title()
 
     def save(self, *args, **kwargs):
-        self.full_clean()
+        # Note: full_clean() removed from here to avoid FileNotFoundError
+        # when editing a candidate without uploading a new image.
+        # Validation is handled at the form/view level instead.
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -433,6 +433,55 @@
             color: white; border: none; padding: 16px; border-radius: 14px;
             font-weight: 800; font-size: 1.05rem; cursor: pointer;
         }
+        /* ======== MOBILE RESPONSIVENESS ======== */
+        @media (max-width: 768px) {
+            .navbar { padding: 0 15px; height: 60px; }
+            .nav-brand { font-size: 1.1rem; gap: 8px; }
+            .nav-logo { width: 32px; height: 32px; font-size: 0.9rem; border-radius: 8px; }
+            .nav-stats { gap: 10px; }
+            .nav-chip { padding: 4px 10px; font-size: 0.75rem; border-radius: 12px; }
+            
+            .hero { padding: 30px 15px 20px; }
+            .hero h1 { font-size: 1.8rem; line-height: 1.2; }
+            .hero p { font-size: 0.95rem; }
+            .hero-badge { padding: 6px 16px; font-size: 0.75rem; margin-bottom: 16px; }
+            
+            .container { padding: 0 15px 60px; }
+            .candidates-grid { 
+                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); 
+                gap: 20px; 
+            }
+            .cand-header { height: 180px; }
+            
+            .overlay { padding: 15px; }
+            .modal { padding: 24px 20px; border-radius: 20px; }
+            .modal-title { font-size: 1.25rem; }
+            
+            .cand-mini { padding: 12px 16px; gap: 12px; }
+            .cand-mini-avatar { width: 44px; height: 44px; font-size: 1rem; }
+            .cand-mini-name { font-size: 1rem; margin-bottom: 0; transform: none; }
+            .cand-mini-dept { font-size: 0.75rem; }
+            
+            .toast-container { right: 15px; left: 15px; top: 70px; }
+            .toast { min-width: 0; width: 100%; padding: 14px 16px; font-size: 0.85rem; }
+            
+            .confirm-btns { flex-direction: column; gap: 10px; }
+            .btn-another, .btn-confirm-vote { padding: 12px; font-size: 0.95rem; }
+            
+            .success-lottie { width: 80px; height: 80px; font-size: 2.5rem; margin-bottom: 16px; }
+            .success-title { font-size: 1.5rem; }
+            .success-cand { padding: 12px; font-size: 1rem; }
+            .btn-done { padding: 14px; font-size: 0.95rem; }
+            
+            .finput, .select-selected { padding: 12px 14px 12px 40px; font-size: 0.9rem; }
+            .finput-wrap .ficon { left: 14px; font-size: 0.9rem; }
+            .btn-submit { padding: 14px; font-size: 1rem; }
+        }
+        
+        @media (max-width: 380px) {
+            .hero h1 { font-size: 1.5rem; }
+            .nav-chip { display: none; } /* Hide stats on very small screens to save space */
+        }
     </style>
 </head>
 <body>
