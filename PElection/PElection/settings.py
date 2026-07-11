@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-y5!1xb#ob6uc7txpuv^1!6o2g!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['192.168.0.110', 'pelection.onrender.com']
+ALLOWED_HOSTS = ['192.168.0.110', 'pelection.onrender.com','localhost']
 
 
 # Application definition
