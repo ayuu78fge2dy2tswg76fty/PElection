@@ -451,7 +451,21 @@
                 grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); 
                 gap: 20px; 
             }
-            .cand-header { height: 180px; }
+            .cand-header { 
+                height: 280px; 
+                -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+                mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            }
+            .cand-image-cover {
+                object-fit: cover;
+                object-position: top center;
+                width: 100%;
+                height: 100%;
+            }
+            .cand-body {
+                margin-top: -30px; /* Pull text up into the faded area */
+                padding-top: 0;
+            }
             
             .overlay { padding: 15px; }
             .modal { padding: 24px 20px; border-radius: 20px; }
