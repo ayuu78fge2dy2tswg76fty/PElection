@@ -12,7 +12,7 @@ from .models import codbixiye_DB
 
 def codee_view(request):
     """Main voting page — shows all candidates."""
-    candidates = musharax_DB.objects.all()
+    candidates = musharax_DB.objects.filter(m_if_allowed=True)
     departments = depadrments_DB.objects.all()
 
     context = {

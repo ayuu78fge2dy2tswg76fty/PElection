@@ -95,6 +95,69 @@
         margin-top: 5px;
     }
 
+    /* Search Bar */
+    .search-bar-wrap {
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .search-input {
+        width: 100%;
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        color: var(--text-primary);
+        padding: 13px 20px 13px 46px;
+        font-size: 0.97rem;
+        font-family: 'Inter', sans-serif;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        box-sizing: border-box;
+    }
+    .search-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+    .search-input::placeholder { color: var(--text-secondary); }
+    .search-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 1rem;
+        pointer-events: none;
+    }
+    .search-count {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        background: rgba(255,255,255,0.05);
+        padding: 3px 10px;
+        border-radius: 20px;
+    }
+
+    /* Section separator row */
+    .section-separator td {
+        padding: 10px 15px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: none !important;
+    }
+    .section-unused td {
+        color: #10b981;
+        background: rgba(16, 185, 129, 0.06);
+    }
+    .section-used td {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.06);
+        border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
     /* Table Section */
     .table-container {
         background: rgba(30, 41, 59, 0.7);
@@ -364,8 +427,14 @@
     </div>
 </div>
 
+<div class="search-bar-wrap">
+    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+    <input type="text" id="idSearchInput" class="search-input" placeholder="ID-ga raadi... (natiijada si toos ah u soo baxayaan)" oninput="filterIDs()">
+    <span class="search-count" id="searchCount"></span>
+</div>
+
 <div class="table-container">
-    <table class="premium-table">
+    <table class="premium-table" id="idsTable">
         <thead>
             <tr>
                 <th>#</th>
@@ -375,10 +444,11 @@
                 <th style="text-align: center;">Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="idsTableBody">
+            {% if all_ids %}
             {% for id_obj in all_ids %}
-            <tr>
-                <td style="color: var(--text-secondary);">{{ forloop.counter }}</td>
+            <tr class="id-row" data-id="{{ id_obj.c_id }}" data-status="{% if id_obj.is_used %}used{% else %}unused{% endif %}">
+                <td style="color: var(--text-secondary);" class="row-num">{{ forloop.counter }}</td>
                 <td>
                     <span class="id-value">{{ id_obj.c_id }}</span>
                 </td>
@@ -398,14 +468,15 @@
                     </button>
                 </td>
             </tr>
-            {% empty %}
+            {% endfor %}
+            {% else %}
             <tr>
                 <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-secondary);">
                     <i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
                     <br>No Vote IDs generated yet. Click "Generate IDs" to create some.
                 </td>
             </tr>
-            {% endfor %}
+            {% endif %}
         </tbody>
     </table>
 </div>
@@ -497,5 +568,50 @@
             }
         });
     });
+
+    // Live search/filter
+    function filterIDs() {
+        const query = document.getElementById('idSearchInput').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#idsTableBody .id-row');
+        const sectionRows = document.querySelectorAll('[data-section-row]');
+        let visible = 0;
+
+        rows.forEach(row => {
+            const idVal = row.getAttribute('data-id').toLowerCase();
+            const status = row.getAttribute('data-status');
+            const matches = idVal.includes(query) || status.includes(query);
+            row.style.display = matches ? '' : 'none';
+            if (matches) visible++;
+        });
+
+        // Show/hide section headers based on whether any rows in that section are visible
+        sectionRows.forEach(sRow => {
+            if (query === '') {
+                sRow.style.display = '';
+            } else {
+                sRow.style.display = 'none';
+            }
+        });
+
+        // Update counter
+        const countEl = document.getElementById('searchCount');
+        if (query) {
+            countEl.textContent = visible + ' natiijo';
+            countEl.style.display = 'block';
+        } else {
+            countEl.style.display = 'none';
+        }
+
+        // Re-number visible rows
+        let num = 1;
+        rows.forEach(row => {
+            if (row.style.display !== 'none') {
+                row.querySelector('.row-num').textContent = num++;
+            }
+        });
+    }
+
+    // Init counter hidden
+    document.getElementById('searchCount').style.display = 'none';
 </script>
 {% endblock %}

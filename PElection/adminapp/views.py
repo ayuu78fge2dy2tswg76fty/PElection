@@ -22,7 +22,6 @@ def login_view(request):
 
         if user is not None and user.is_active and (user.is_staff or user.is_superuser):
             login(request, user)
-            messages.success(request, f"Ku soo dhawoow, {user.username}.")
             next_url = request.POST.get('next') or request.GET.get('next')
             if next_url and url_has_allowed_host_and_scheme(
                 next_url,
@@ -32,15 +31,14 @@ def login_view(request):
                 return redirect(next_url)
             return redirect('dashboard')
 
-        messages.error(request, 'Login-ka wuu fashilmay. Hubi username/email iyo password-ka.')
+        messages.error(request, ' Hubi username/email iyo password-ka.')
 
     return render(request, 'adminapp/login.html')
 
 
 def logout_view(request):
     logout(request)
-    messages.info(request, 'Waad ka baxday account-ka.')
-    return redirect('login')
+    return redirect('voiteid')
 
 @login_required(login_url='login')
 def dashboard_view(request):
@@ -165,6 +163,13 @@ def musharax_view(request):
             if new_image:
                 candidate.m_image = new_image
             
+            candidate.save()
+            return redirect('musharax')
+
+        elif action == 'toggle_allow':
+            candidate_id = request.POST.get('candidate_id')
+            candidate = get_object_or_404(musharax_DB, id=candidate_id)
+            candidate.m_if_allowed = not candidate.m_if_allowed
             candidate.save()
             return redirect('musharax')
 
@@ -359,7 +364,8 @@ def voiteid_view(request):
                 messages.error(request, f'Khalad ayaa dhacay akhrinta Excel-ka: Fadlan hubi inuu yahay file sax ah.')
             return redirect('voiteid')
 
-    all_ids_qs = ID_DB.objects.all().order_by('-_created_at')
+    # Unused first (False=0 sorts before True=1, reversed to get unused on top)
+    all_ids_qs = ID_DB.objects.all().order_by('_is_used', '-_created_at')
     total_ids = all_ids_qs.count()
     used_ids = all_ids_qs.filter(_is_used=True).count()
     unused_ids = all_ids_qs.filter(_is_used=False).count()

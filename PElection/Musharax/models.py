@@ -40,6 +40,8 @@ class musharax_DB(models.Model):
     m_gender = models.CharField(max_length=20, choices=gender_choice, default='')
 
     m_username = models.CharField(max_length=100, unique=True, help_text="Gali musharax username.",null=True,blank=True)
+    
+    m_if_allowed= models.BooleanField(default=False,help_text="Ma  Tartami Kara musharaxa.")
 
 
     class Meta:

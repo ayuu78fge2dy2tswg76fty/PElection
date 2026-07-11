@@ -734,6 +734,16 @@
                         onclick="openViewModal(this)">
                     <i class="fa-solid fa-chart-pie"></i>
                 </button>
+                <form method="post" style="display:inline; margin: 0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="toggle_allow">
+                    <input type="hidden" name="candidate_id" value="{{ candidate.id }}">
+                    <button type="submit" class="action-btn" 
+                            style="color: {% if candidate.m_if_allowed %}#10b981{% else %}#ef4444{% endif %}; border-color: {% if candidate.m_if_allowed %}rgba(16, 185, 129, 0.3){% else %}rgba(239, 68, 68, 0.3){% endif %}; background: {% if candidate.m_if_allowed %}rgba(16, 185, 129, 0.1){% else %}rgba(239, 68, 68, 0.1){% endif %};" 
+                            title="{% if candidate.m_if_allowed %}Allowed (Click to Deny){% else %}Denied (Click to Allow){% endif %}">
+                        <i class="fa-solid {% if candidate.m_if_allowed %}fa-check{% else %}fa-xmark{% endif %}"></i>
+                    </button>
+                </form>
                 <button class="action-btn btn-edit" title="Edit" 
                         onclick="openEditModal('{{ candidate.id }}', '{{ candidate.m_name|escapejs }}', '{{ candidate.m_email|escapejs }}', '{{ candidate.m_gender }}', '{{ candidate.m_depadrments.id }}')">
                     <i class="fa-solid fa-pen"></i>

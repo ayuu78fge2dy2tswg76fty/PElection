@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-y5!1xb#ob6uc7txpuv^1!6o2g!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['192.168.0.110', 'pelection.onrender.com','localhost']
+ALLOWED_HOSTS = ['192.168.0.110', 'pelection.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -86,19 +86,19 @@ WSGI_APPLICATION = 'PElection.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', 'postgres'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+
+    # 'default': {
+    #     'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+    #     'NAME': os.getenv('DB_NAME', 'postgres'),
+    #     'USER': os.getenv('DB_USER', 'postgres'),
+    #     'PASSWORD': os.getenv('DB_PASSWORD', ''),
+    #     'HOST': os.getenv('DB_HOST', 'localhost'),
+    #     'PORT': os.getenv('DB_PORT', '5432'),
+    # }
 }
 
 
