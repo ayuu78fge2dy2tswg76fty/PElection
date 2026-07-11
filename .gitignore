@@ -17,7 +17,7 @@ db.sqlite3-journal
 *.log
 
 # Media Files (User Uploads)
-media/
+# media/
 
 # Static Files (Generated)
 staticfiles/
@@ -32,8 +32,7 @@ staticfiles/
 # PyCharm
 .idea/
 
-# macOS
-.DS_Store
+
 
 # Windows
 Thumbs.db
