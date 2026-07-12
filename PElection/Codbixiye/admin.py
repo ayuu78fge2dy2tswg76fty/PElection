@@ -10,6 +10,17 @@ class codbixiyeAdmin(admin.ModelAdmin):
     list_filter =['c_department', 'c_musharax']
     search_fields =['c_id']
 
+    # def has_add_permission(self, request):
+    #     return False
+
+   
+    # def has_change_permission(self, request, obj=None):
+    #     return False
+
+  
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
+
 admin.site.register(codbixiye_DB, codbixiyeAdmin)
     
 

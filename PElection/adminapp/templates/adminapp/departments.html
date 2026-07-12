@@ -1,6 +1,6 @@
 {% extends 'adminapp/base.html' %}
 
-{% block title %}Manage Departments | E-Election{% endblock %}
+{% block title %} Departments | E-Election{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -304,9 +304,9 @@
 
 {% block content %}
 <div class="page-header">
-    <h1 class="page-title">Manage Departments</h1>
+    <h1 class="page-title">Waxaha</h1>
     <button class="btn-add" onclick="openModal('addModal')">
-        <i class="fa-solid fa-plus"></i> Add New Department
+        <i class="fa-solid fa-plus"></i> Wax Cusub
     </button>
 </div>
 
@@ -314,7 +314,7 @@
     <div class="summary-card">
         <div class="sc-icon icon-total"><i class="fa-solid fa-building"></i></div>
         <div class="sc-info">
-            <h3>Total Departments</h3>
+            <h3>Waxaha Guud</h3>
             <p>{{ total_departments }}</p>
         </div>
     </div>
@@ -334,8 +334,8 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Department Name</th>
-                <th style="text-align: center;">Actions</th>
+                <th>Magaca Waxda</th>
+                <th style="text-align: center;">Talabo</th>
             </tr>
         </thead>
         <tbody>
@@ -370,7 +370,7 @@
             {% empty %}
             <tr>
                 <td colspan="3" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                    No departments found.
+                    Same Wax.
                 </td>
             </tr>
             {% endfor %}
@@ -382,7 +382,7 @@
 <div class="modal-overlay" id="addModal">
     <div class="modal-container">
         <div class="modal-header">
-            <h2 class="modal-title" id="modalTitle"><i class="fa-solid fa-building" style="color: #10b981;"></i> Add Department</h2>
+            <h2 class="modal-title" id="modalTitle"><i class="fa-solid fa-building" style="color: #10b981;"></i> KU Dar Wax Cusub</h2>
             <button class="btn-close" onclick="closeModal('addModal')"><i class="fa-solid fa-times"></i></button>
         </div>
         <form action="" method="POST" id="deptForm">
@@ -391,11 +391,11 @@
             <input type="hidden" name="dept_id" id="deptId" value="">
             
             <div class="form-group">
-                <label class="form-label">Department Name</label>
-                <input type="text" name="d_name" id="dName" class="form-control" placeholder="e.g. IT Department" required>
+                <label class="form-label">Magaca Waxda</label>
+                <input type="text" name="d_name" id="dName" class="form-control" placeholder="Sida Waxda IT " required>
             </div>
             
-            <button type="submit" class="btn-submit" id="btnSubmit">Save Department</button>
+            <button type="submit" class="btn-submit" id="btnSubmit">Xaree</button>
         </form>
     </div>
 </div>
@@ -406,16 +406,16 @@
         <div style="font-size: 3rem; color: #ef4444; margin-bottom: 15px;">
             <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
-        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 15px;">Delete Department</h2>
-        <p class="delete-text">Are you sure you want to delete <br><strong id="deleteDeptName"></strong>?</p>
+        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 15px;">Tirtir Waxda</h2>
+        <p class="delete-text">Ma hubtaa in aad tirtirto Waxda <br><strong id="deleteDeptName"></strong>?</p>
         
         <form action="" method="POST">
             {% csrf_token %}
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="dept_id" id="deleteDeptId">
             <div class="actions-flex">
-                <button type="button" class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
-                <button type="submit" class="btn-confirm-delete">Yes, Delete</button>
+                <button type="button" class="btn-cancel" onclick="closeModal('deleteModal')">Kalabo</button>
+                <button type="submit" class="btn-confirm-delete">Haa</button>
             </div>
         </form>
     </div>
@@ -425,7 +425,7 @@
 <div class="modal-overlay" id="viewModal">
     <div class="modal-container" style="max-width: 600px;">
         <div class="modal-header">
-            <h2 class="modal-title"><i class="fa-solid fa-chart-pie" style="color: #3b82f6;"></i> <span id="viewDeptName">Department Name</span></h2>
+            <h2 class="modal-title"><i class="fa-solid fa-chart-pie" style="color: #3b82f6;"></i> <span id="viewDeptName">Magaca Waxda</span></h2>
             <button class="btn-close" onclick="closeModal('viewModal')"><i class="fa-solid fa-times"></i></button>
         </div>
         
@@ -453,7 +453,7 @@
         </div>
         
         <div style="margin-top: 25px; text-align: right;">
-            <button class="btn-cancel" style="padding: 12px 25px; border-radius: 12px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" onclick="closeModal('viewModal')">Close</button>
+            <button class="btn-cancel" style="padding: 12px 25px; border-radius: 12px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" onclick="closeModal('viewModal')">Xir</button>
         </div>
     </div>
 </div>
@@ -465,11 +465,11 @@
     function openModal(modalId) {
         document.getElementById(modalId).classList.add('active');
         if(modalId === 'addModal') {
-            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-building" style="color: #10b981;"></i> Add Department';
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-building" style="color: #10b981;"></i> Waxda Cusub';
             document.getElementById('formAction').value = 'add';
             document.getElementById('deptId').value = '';
             document.getElementById('dName').value = '';
-            document.getElementById('btnSubmit').innerText = 'Save Department';
+            document.getElementById('btnSubmit').innerText = 'Xaree';
         }
     }
 
@@ -479,11 +479,11 @@
 
     function openEditModal(id, dName) {
         openModal('addModal');
-        document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen" style="color: #10b981;"></i> Edit Department';
+        document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen" style="color: #10b981;"></i> Dib Uhabayn';
         document.getElementById('formAction').value = 'edit';
         document.getElementById('deptId').value = id;
         document.getElementById('dName').value = dName;
-        document.getElementById('btnSubmit').innerText = 'Update Department';
+        document.getElementById('btnSubmit').innerText = 'Habee';
     }
 
     function openDeleteModal(id, dName) {
@@ -494,7 +494,7 @@
 
     function openViewModal(dName, total, male, female, candidates) {
         document.getElementById('viewModal').classList.add('active');
-        document.getElementById('viewDeptName').innerText = dName + ' - Statistics';
+        document.getElementById('viewDeptName').innerText = dName + ' - ';
         document.getElementById('viewTotalVoters').innerText = total;
         document.getElementById('viewMaleVoters').innerText = male;
         document.getElementById('viewFemaleVoters').innerText = female;

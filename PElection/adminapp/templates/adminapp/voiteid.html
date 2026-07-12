@@ -377,22 +377,22 @@
 {% endif %}
 
 <div class="page-header">
-    <h1 class="page-title">Vote IDs Management</h1>
+    <h1 class="page-title">IDs</h1>
     <div style="display: flex; gap: 12px; flex-wrap: wrap;">
         <form method="POST" style="display:inline;">
             {% csrf_token %}
             <input type="hidden" name="action" value="export">
             <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);">
-                <i class="fa-solid fa-file-export"></i> Export 
+                <i class="fa-solid fa-file-export"></i> La Dag 
             </button>
         </form>
         
         <button class="btn-primary" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="openModal('importModal')">
-            <i class="fa-solid fa-file-import"></i> Import 
+            <i class="fa-solid fa-file-import"></i> So Xare 
         </button>
 
         <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="openModal('generateModal')">
-            <i class="fa-solid fa-bolt"></i> Generate IDs
+            <i class="fa-solid fa-bolt"></i> Same IDs
         </button>
     </div>
 </div>
@@ -403,7 +403,7 @@
             <i class="fa-solid fa-id-card-clip"></i>
         </div>
         <div class="sc-info">
-            <h3>Total IDs</h3>
+            <h3>Guud ahan IDs</h3>
             <p>{{ total_ids }}</p>
         </div>
     </div>
@@ -412,7 +412,7 @@
             <i class="fa-solid fa-check-circle"></i>
         </div>
         <div class="sc-info">
-            <h3>Unused IDs</h3>
+            <h3>IDs an La Adegsan</h3>
             <p>{{ unused_ids }}</p>
         </div>
     </div>
@@ -421,7 +421,7 @@
             <i class="fa-solid fa-times-circle"></i>
         </div>
         <div class="sc-info">
-            <h3>Used IDs</h3>
+            <h3>IDs La Adegsaday</h3>
             <p>{{ used_ids }}</p>
         </div>
     </div>
@@ -429,7 +429,7 @@
 
 <div class="search-bar-wrap">
     <i class="fa-solid fa-magnifying-glass search-icon"></i>
-    <input type="text" id="idSearchInput" class="search-input" placeholder="ID-ga raadi... (natiijada si toos ah u soo baxayaan)" oninput="filterIDs()">
+    <input type="text" id="idSearchInput" class="search-input" placeholder="ID-ga raadi... ( sida A87F)" oninput="filterIDs()">
     <span class="search-count" id="searchCount"></span>
 </div>
 
@@ -438,10 +438,10 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Voting ID</th>
-                <th>Status</th>
-                <th>Generated At</th>
-                <th style="text-align: center;">Action</th>
+                <th> ID</th>
+                <th>Xlada</th>
+                <th>Gorta Lasameyey</th>
+                <th style="text-align: center;">Talabo</th>
             </tr>
         </thead>
         <tbody id="idsTableBody">
@@ -454,9 +454,9 @@
                 </td>
                 <td>
                     {% if id_obj.is_used %}
-                        <span class="status-badge status-used"><i class="fa-solid fa-lock"></i> Used</span>
+                        <span class="status-badge status-used"><i class="fa-solid fa-lock"></i> La Adegsaday</span>
                     {% else %}
-                        <span class="status-badge status-unused"><i class="fa-solid fa-lock-open"></i> Unused</span>
+                        <span class="status-badge status-unused"><i class="fa-solid fa-lock-open"></i> La Adegsan</span>
                     {% endif %}
                 </td>
                 <td style="color: var(--text-secondary);">
@@ -485,7 +485,7 @@
 <div class="modal-overlay" id="importModal">
     <div class="modal-container">
         <div class="modal-header">
-            <h2 class="modal-title"><i class="fa-solid fa-file-import" style="color: #f59e0b;"></i> Import Excel</h2>
+            <h2 class="modal-title"><i class="fa-solid fa-file-import" style="color: #f59e0b;"></i> Soo Gali</h2>
             <button class="btn-close" type="button" onclick="closeModal('importModal')"><i class="fa-solid fa-times"></i></button>
         </div>
         <form action="" method="POST" enctype="multipart/form-data">
@@ -505,18 +505,18 @@
 <div class="modal-overlay" id="generateModal">
     <div class="modal-container">
         <div class="modal-header">
-            <h2 class="modal-title"><i class="fa-solid fa-bolt" style="color: #10b981;"></i> Generate Vote IDs</h2>
+            <h2 class="modal-title"><i class="fa-solid fa-bolt" style="color: #10b981;"></i> Samee IDs</h2>
             <button class="btn-close" onclick="closeModal('generateModal')"><i class="fa-solid fa-times"></i></button>
         </div>
         <form action="" method="POST">
             {% csrf_token %}
             <input type="hidden" name="action" value="generate">
             
-            <p style="color: var(--text-secondary); margin-bottom: 15px; text-align: center;">Enter the number of IDs you want to generate.</p>
+            <p style="color: var(--text-secondary); margin-bottom: 15px; text-align: center;">Gali Inta IDs-ka  aad rabto inaad sameysid.</p>
             
             <input type="number" name="quantity" class="form-control" placeholder="e.g. 10" min="1" max="1000" required>
             
-            <button type="submit" class="btn-submit">Generate Now</button>
+            <button type="submit" class="btn-submit">Samee</button>
         </form>
     </div>
 </div>

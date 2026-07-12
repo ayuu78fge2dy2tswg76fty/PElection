@@ -782,7 +782,7 @@
                 <label class="form-label">Full Name</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-user input-icon"></i>
-                    <input type="text" name="m_name" id="m_name" class="form-control" placeholder="Enter full name" required>
+                    <input type="text" name="m_name" id="m_name" class="form-control" placeholder="Magaca" required>
                 </div>
             </div>
             
@@ -790,7 +790,7 @@
                 <label class="form-label">Email Address</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-envelope input-icon"></i>
-                    <input type="email" name="m_email" id="m_email" class="form-control" placeholder="candidate@example.com" required>
+                    <input type="email" name="m_email" id="m_email" class="form-control" placeholder="musharax@example.com" required>
                 </div>
             </div>
 
@@ -800,18 +800,18 @@
                     <div class="input-wrapper">
                         <i class="fa-solid fa-venus-mars input-icon"></i>
                         <select name="m_gender" id="m_gender" class="form-control" required>
-                            <option value="" disabled selected>Select...</option>
+                            <option value="" disabled selected>Doro...</option>
                             <option value="lab">Lab </option>
                             <option value="dhadig">DHadig</option>
                         </select>
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">Department</label>
+                    <label class="form-label">Waxda</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-building input-icon"></i>
                         <select name="m_depadrments" id="m_depadrments" class="form-control" required>
-                            <option value="" disabled selected>Select...</option>
+                            <option value="" disabled selected>Doro...</option>
                             {% for dept in departments %}
                                 <option value="{{ dept.id }}">{{ dept.d_name|default:dept }}</option>
                             {% endfor %}
@@ -821,7 +821,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Profile Image (Optional for Edit)</label>
+                <label class="form-label">Sawirkisa  (Wad ka Tagi Karta)</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-image input-icon"></i>
                     <input type="file" name="m_image" class="form-control" accept="image/*" style="padding-left: 48px;">
@@ -829,7 +829,7 @@
             </div>
 
             <button type="submit" class="btn-submit" id="submitBtnText">
-                <i class="fa-solid fa-check"></i> Save Candidate
+                <i class="fa-solid fa-check"></i> Xare
             </button>
         </form>
     </div>
@@ -905,7 +905,7 @@
 
             <!-- Departments Breakdown Card -->
             <div class="analytics-panel panel-full">
-                <div class="panel-title"><i class="fa-solid fa-building"></i> Department Samayntoda & Guud Ahan</div>
+                <div class="panel-title"><i class="fa-solid fa-building"></i> Samaynta Waxaha & Guud Ahan</div>
                 <div class="dept-list" id="viewDeptList">
                     <!-- Dynamic Content -->
                 </div>
@@ -920,7 +920,7 @@
         <div class="delete-icon-wrapper">
             <i class="fa-solid fa-exclamation-triangle"></i>
         </div>
-        <h2 style="color: var(--text-primary); font-size: 1.5rem; margin-bottom: 15px;">Delete Candidate?</h2>
+        <h2 style="color: var(--text-primary); font-size: 1.5rem; margin-bottom: 15px;">Tirtir Musharax?</h2>
         <p class="delete-text">Ma hubtaa in aad tirtirto musharax <br><strong id="deleteCandidateName"></strong>?</p>
         
         <form action="" method="POST">
@@ -928,8 +928,8 @@
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="candidate_id" id="deleteCandidateId" value="">
             <div class="delete-actions">
-                <button type="button" class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
-                <button type="submit" class="btn-confirm-delete">Yes, Delete</button>
+                <button type="button" class="btn-cancel" onclick="closeModal('deleteModal')">Kalabo</button>
+                <button type="submit" class="btn-confirm-delete">Haa</button>
             </div>
         </form>
     </div>
@@ -946,8 +946,8 @@
             document.getElementById('candidateForm').reset();
             document.getElementById('formAction').value = 'add';
             document.getElementById('candidateId').value = '';
-            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-plus"></i> Add Candidate';
-            document.getElementById('submitBtnText').innerHTML = '<i class="fa-solid fa-check"></i> Save Candidate';
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-plus"></i> + Musharax';
+            document.getElementById('submitBtnText').innerHTML = '<i class="fa-solid fa-check"></i> Save Musharax';
         }
     }
 
@@ -995,7 +995,7 @@
                             <div class="dept-bar-fill" style="width: 0%;" data-target-width="${dept.pct}%"></div>
                         </div>
                         <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-                            <span>Gud Ahan ${dept.name}: <strong style="color: #a855f7;">${dept.sys_pct}%</strong> (${dept.votes} out of ${dept.sys_total} total)</span>
+                            <span>Gud Ahan ${dept.name}: <strong style="color: #a855f7;">${dept.sys_pct}%</strong> (${dept.votes} INTA ${dept.sys_total} Guud)</span>
                             <div style="width: 100px; height: 4px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
                                 <div style="height: 100%; background: #a855f7; width: 0%; transition: width 1.5s;" data-sys-target="${dept.sys_pct}%"></div>
                             </div>
@@ -1005,7 +1005,7 @@
                 deptListEl.innerHTML += itemHTML;
             });
         } else {
-            deptListEl.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No department data available.</div>';
+            deptListEl.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">waxna Kuma Codayn.</div>';
         }
         
         // Open Modal First
@@ -1047,8 +1047,8 @@
         document.getElementById('m_depadrments').value = deptId;
         
         // Update Titles
-        document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-pen"></i> Edit Candidate';
-        document.getElementById('submitBtnText').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Candidate';
+        document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-pen"></i> Edit Musharax';
+        document.getElementById('submitBtnText').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Musharax';
         
         // Open Modal
         openModal('addModal');
