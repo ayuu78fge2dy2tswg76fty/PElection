@@ -31,7 +31,7 @@ def login_view(request):
                 return redirect(next_url)
             return redirect('dashboard')
 
-        messages.error(request, ' Hubi username/email iyo password-ka.')
+        messages.error(request, ' Hubi username/email iyo password-ka Sax Yihin.')
 
     return render(request, 'adminapp/login.html')
 
@@ -289,7 +289,7 @@ def voiteid_view(request):
                 if quantity > 0 and quantity <= 1000: # Limit to 1000 at a time for safety
                     for _ in range(quantity):
                         ID_DB.objects.create()
-                    messages.success(request, f'Successfully generated {quantity} IDs.')
+                    messages.success(request, f'Wa la Sameyey {quantity} IDs.')
             except ValueError:
                 messages.error(request, 'Invalid quantity.')
                 
@@ -299,7 +299,7 @@ def voiteid_view(request):
             id_val = request.POST.get('id_val')
             if id_val:
                 ID_DB.objects.filter(_c_id=id_val).delete()
-                messages.success(request, 'ID successfully deleted.')
+                messages.success(request, 'ID  Wa la Tirtiray.')
             return redirect('voiteid')
             
         elif action == 'export':
@@ -355,7 +355,7 @@ def voiteid_view(request):
                     ID_DB.objects.create(_c_id=vote_id)
                     accepted += 1
                     
-                msg = f"Natiijada Import-ka: {accepted} ID waa la aqbalay. "
+                msg = f"Natiijada So xaraynta: {accepted} ID waa la aqbalay. "
                 if skipped_exists > 0:
                     msg += f" | {skipped_exists} ID waa laga booday (Horay ayay u jireen). "
 
@@ -367,7 +367,7 @@ def voiteid_view(request):
                     messages.info(request, "Wax ID ah lagama helin file-ka.")
                     
             except Exception as e:
-                messages.error(request, f'Khalad ayaa dhacay akhrinta Excel-ka: Fadlan hubi inuu yahay file sax ah.')
+                messages.error(request, f'Khalad ayaa dhacay  Excel-ka: Fadlan hubi inuu yahay file sax ah.')
             return redirect('voiteid')
 
     # Unused first (False=0 sorts before True=1, reversed to get unused on top)
@@ -483,7 +483,7 @@ def departments_view(request):
             d_name = request.POST.get('d_name')
             if d_name:
                 depadrments_DB.objects.create(d_name=d_name)
-                messages.success(request, 'Department successfully added!')
+                messages.success(request, 'Wax Cusub ayad ku dartay!')
             return redirect('departments')
             
         elif action == 'edit':
@@ -494,14 +494,14 @@ def departments_view(request):
             if d_name:
                 dept_obj.d_name = d_name
                 dept_obj.save()
-                messages.success(request, 'Department successfully updated!')
+                messages.success(request, 'Waxdan Wad Habaysay')
             return redirect('departments')
             
         elif action == 'delete':
             dept_id = request.POST.get('dept_id')
             dept_obj = get_object_or_404(depadrments_DB, id=dept_id)
             dept_obj.delete()
-            messages.success(request, 'Department successfully deleted!')
+            messages.success(request, 'Waxda wa tirtirtay!')
             return redirect('departments')
 
     departments_qs = depadrments_DB.objects.all().order_by('-id')
