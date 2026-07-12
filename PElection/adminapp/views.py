@@ -316,7 +316,7 @@ def voiteid_view(request):
                 ws.append([obj._c_id])
                 
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            response['Content-Disposition'] = 'attachment; filename="unused_voite_ids.xlsx"'
+            response['Content-Disposition'] = 'attachment; filename="IDs.xlsx"'
             
             wb.save(response)
             return response
