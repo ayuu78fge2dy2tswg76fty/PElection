@@ -308,7 +308,7 @@ def voiteid_view(request):
             
             wb = openpyxl.Workbook()
             ws = wb.active
-            ws.title = "Unused Vote IDs"
+            ws.title = "IDs an La,adegsan"
             ws.append(['Vote ID'])
             
             unused_ids = ID_DB.objects.filter(_is_used=False)

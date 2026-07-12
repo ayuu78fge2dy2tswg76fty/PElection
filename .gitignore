@@ -18,6 +18,7 @@ db.sqlite3-journal
 
 # Media Files (User Uploads)
 # media/
+assets/
 
 # Static Files (Generated)
 staticfiles/
