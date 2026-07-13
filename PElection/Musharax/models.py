@@ -33,8 +33,9 @@ class musharax_DB(models.Model):
 
     m_joined = models.DateTimeField(auto_now_add=True)
 
-    m_image = models.ImageField(upload_to="static/musharax_images/",validators=[FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png", "webp"]),validate_image_size,validate_image_content,])
-    
+    # m_image = models.ImageField(upload_to="static/musharax_images/",validators=[FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png", "webp"]),validate_image_size,validate_image_content,])
+    m_image = models.URLField(max_length=500, null=True, blank=True, help_text="Supabase Public URL for the candidate image.")
+
     m_depadrments = models.ForeignKey(depadrments_DB, on_delete=models.CASCADE)
 
     m_gender = models.CharField(max_length=20, choices=gender_choice, default='')

@@ -531,7 +531,7 @@
         <div class="cand-card">
             <div class="cand-header">
                 {% if cand.m_image %}
-                    <img src="{{ cand.m_image.url }}" alt="{{ cand.m_name }}" class="cand-image-cover">
+                    <img src="{{ cand.m_image }}" alt="{{ cand.m_name }}" class="cand-image-cover">
                 {% else %}
                     <div class="cand-placeholder"><i class="fa-solid fa-user-tie"></i></div>
                 {% endif %}
@@ -542,7 +542,7 @@
                 <button class="btn-vote"
                     data-id="{{ cand.id }}"
                     data-name="{{ cand.m_name|escapejs }}"
-                    data-img="{% if cand.m_image %}{{ cand.m_image.url }}{% endif %}"
+                    data-img="{% if cand.m_image %}{{ cand.m_image }}{% endif %}"
                     onclick="openVoteModal(this)">
                     <i class="fa-solid fa-check-to-slot"></i> Ucodee
                 </button>

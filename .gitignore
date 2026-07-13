@@ -16,11 +16,11 @@ db.sqlite3
 db.sqlite3-journal
 *.log
 
-# Media Files (User Uploads)
-# media/
-# assets/
+Media Files (User Uploads)
+media/
+assets/
 
-# Static Files (Generated)
+Static Files (Generated)
 staticfiles/
 
 # Environment Variables

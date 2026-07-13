@@ -684,7 +684,7 @@
 
         <div class="card-header">
             {% if candidate.m_image %}
-                <img src="{{ candidate.m_image.url }}" alt="{{ candidate.m_name }}" class="card-header-img">
+                <img src="{{ candidate.m_image }}" alt="{{ candidate.m_name }}" class="card-header-img">
             {% else %}
                 <div class="card-header-placeholder">
                     <i class="fa-solid fa-user-tie"></i>
@@ -745,7 +745,7 @@
                     </button>
                 </form>
                 <button class="action-btn btn-edit" title="Edit" 
-                        onclick="openEditModal('{{ candidate.id }}', '{{ candidate.m_name|escapejs }}', '{{ candidate.m_email|escapejs }}', '{{ candidate.m_gender }}', '{{ candidate.m_depadrments.id }}')">
+                        onclick="openEditModal('{{ candidate.id }}', '{{ candidate.m_name|escapejs }}', '{{ candidate.m_email|escapejs }}', '{{ candidate.m_gender }}', '{{ candidate.m_depadrments.id }}', '{{ candidate.m_image|escapejs }}')">
                     <i class="fa-solid fa-pen"></i>
                 </button>
                 <button class="action-btn btn-delete" title="Delete" 
@@ -821,10 +821,10 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Sawirkisa  (Wad ka Tagi Karta)</label>
+                <label class="form-label">Sawirkisa URL (Wad ka Tagi Karta)</label>
                 <div class="input-wrapper">
-                    <i class="fa-solid fa-image input-icon"></i>
-                    <input type="file" name="m_image" class="form-control" accept="image/*" style="padding-left: 48px;">
+                    <i class="fa-solid fa-link input-icon"></i>
+                    <input type="url" name="m_image" id="m_image" class="form-control" placeholder="https://hfxcvpogwocrputxmdoh.supabase.co/storage/v1/object/public/mushraximage/..." style="padding-left: 48px;">
                 </div>
             </div>
 
@@ -1035,7 +1035,7 @@
     });
 
     // Edit Candidate Logic
-    function openEditModal(id, name, email, gender, deptId) {
+    function openEditModal(id, name, email, gender, deptId, image) {
         // Set Action and ID
         document.getElementById('formAction').value = 'edit';
         document.getElementById('candidateId').value = id;
@@ -1045,6 +1045,9 @@
         document.getElementById('m_email').value = email;
         document.getElementById('m_gender').value = gender;
         document.getElementById('m_depadrments').value = deptId;
+        if(document.getElementById('m_image')) {
+            document.getElementById('m_image').value = image || '';
+        }
         
         // Update Titles
         document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-pen"></i> Edit Musharax';

@@ -9,6 +9,42 @@ from voiteID.models import ID_DB
 from Depadrments.models import depadrments_DB
 
 from django.contrib.auth.models import User as AdminUser
+import os
+import requests
+import uuid
+
+def upload_image_to_supabase(file_obj):
+    if not file_obj:
+        return None
+    
+    supabase_url = "https://hfxcvpogwocrputxmdoh.supabase.co"
+    bucket_name = "mushraximage"
+    supabase_key = os.getenv("SUPABASE_KEY")
+    
+    if not supabase_key:
+        print("WARNING: SUPABASE_KEY is missing. Cannot upload image to Supabase.")
+        return None
+        
+    # Generate unique filename to avoid overwrites
+    ext = os.path.splitext(file_obj.name)[1]
+    file_name = f"{uuid.uuid4()}{ext}"
+    url = f"{supabase_url}/storage/v1/object/{bucket_name}/{file_name}"
+    
+    headers = {
+        "Authorization": f"Bearer {supabase_key}",
+        "Content-Type": file_obj.content_type,
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, data=file_obj.read())
+        if response.status_code == 200:
+            return f"{supabase_url}/storage/v1/object/public/{bucket_name}/{file_name}"
+        else:
+            print(f"Supabase upload failed: {response.text}")
+            return None
+    except Exception as e:
+        print(f"Error uploading to Supabase: {e}")
+        return None
 
 
 def login_view(request):
@@ -71,7 +107,7 @@ def dashboard_view(request):
                     'name': cand.m_name,
                     'dept': cand.m_depadrments.d_name if cand.m_depadrments else 'N/A',
                     'votes': v,
-                    'image': cand.m_image.url if cand.m_image else None,
+                    'image': cand.m_image if cand.m_image else None,
                     'pct': int(round(v / total_voters * 100)) if total_voters > 0 else 0,
                 }
 
@@ -84,7 +120,7 @@ def dashboard_view(request):
             'dept': cand.m_depadrments.d_name if cand.m_depadrments else 'N/A',
             'votes': v,
             'pct': int(round(v / total_voters * 100)) if total_voters > 0 else 0,
-            'image': cand.m_image.url if cand.m_image else None,
+            'image': cand.m_image if cand.m_image else None,
         })
     leaderboard = sorted(leaderboard, key=lambda x: x['votes'], reverse=True)[:5]
 
@@ -136,40 +172,46 @@ def musharax_view(request):
             email = request.POST.get('m_email')
             gender = request.POST.get('m_gender')
             dept_id = request.POST.get('m_depadrments')
-            image = request.FILES.get('m_image')
+            image_url = request.POST.get('m_image')
             
             if name and email and gender and dept_id:
-                dept = get_object_or_404(depadrments_DB, id=dept_id)
-                musharax_DB.objects.create(
-                    m_name=name,
-                    m_email=email,
-                    m_gender=gender,
-                    m_depadrments=dept,
-                    m_image=image
-                )
-                return redirect('musharax')
+                if musharax_DB.objects.filter(m_email=email).exists():
+                    messages.error(request, 'Email-kan horay ayaa loo isticmaalay. Fadlan mid kale geli.')
+                else:
+                    dept = get_object_or_404(depadrments_DB, id=dept_id)
+                        
+                    musharax_DB.objects.create(
+                        m_name=name,
+                        m_email=email,
+                        m_gender=gender,
+                        m_depadrments=dept,
+                        m_image=image_url
+                    )
+                    messages.success(request, 'Musharax si guul ah ayaa lagu daray.')
+            return redirect('musharax')
 
         elif action == 'edit':
             candidate_id = request.POST.get('candidate_id')
             candidate = get_object_or_404(musharax_DB, id=candidate_id)
-            candidate.m_name = request.POST.get('m_name')
-            candidate.m_email = request.POST.get('m_email')
-            candidate.m_gender = request.POST.get('m_gender')
-            dept_id = request.POST.get('m_depadrments')
-            if dept_id:
-                candidate.m_depadrments = get_object_or_404(depadrments_DB, id=dept_id)
             
-            new_image = request.FILES.get('m_image')
-            if new_image:
-                # Only replace image if a new one is uploaded
-                candidate.m_image = new_image
-            # If no new image uploaded, keep the existing m_image field as-is
-            
-            # Use update_fields to avoid re-validating the unchanged image file
-            update_fields = ['m_name', 'm_email', 'm_gender', 'm_depadrments', 'm_if_allowed']
-            if new_image:
-                update_fields.append('m_image')
-            candidate.save(update_fields=update_fields)
+            email = request.POST.get('m_email')
+            if musharax_DB.objects.filter(m_email=email).exclude(id=candidate_id).exists():
+                messages.error(request, 'Email-kan musharax kale ayaa isticmaalaya. Fadlan mid kale geli.')
+            else:
+                candidate.m_name = request.POST.get('m_name')
+                candidate.m_email = email
+                candidate.m_gender = request.POST.get('m_gender')
+                dept_id = request.POST.get('m_depadrments')
+                if dept_id:
+                    candidate.m_depadrments = get_object_or_404(depadrments_DB, id=dept_id)
+                
+                new_image_url = request.POST.get('m_image')
+                if new_image_url is not None:
+                    candidate.m_image = new_image_url
+                
+                update_fields = ['m_name', 'm_email', 'm_gender', 'm_depadrments', 'm_if_allowed', 'm_image']
+                candidate.save(update_fields=update_fields)
+                messages.success(request, 'Musharaxa xogihiisa waa la cusboonaysiiyay.')
             return redirect('musharax')
 
         elif action == 'toggle_allow':
