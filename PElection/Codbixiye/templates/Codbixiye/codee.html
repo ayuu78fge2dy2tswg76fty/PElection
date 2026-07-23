@@ -586,7 +586,7 @@
             <div class="finput-wrap">
                 <i class="ficon fa-solid fa-hashtag"></i>
                 <input type="text" id="inputVoteId" class="finput" placeholder="Gali ID-gaaga (e.g. AB12345)" 
-                       oninput="this.value = this.value.toUpperCase();" onblur="verifyId()">
+                       oninput="handleIdInput(this);" onblur="verifyId()">
                 <span class="id-status" id="idStatus"></span>
             </div>
             <div class="field-msg" id="idMsg"></div>
@@ -783,6 +783,20 @@
         } else {
             status.innerHTML = '';
             idVerified = false;
+        }
+    }
+
+    function handleIdInput(input) {
+        const originalVal = input.value;
+        const cleanedVal = originalVal.replace(/[^A-Za-z0-9]/g, '');
+        
+        if (originalVal !== cleanedVal) {
+            input.value = cleanedVal.toUpperCase();
+            setIdState('err', 'Kaliya xarfo iyo lambaro ayaa loo ogolyahay!');
+            showToast('warn', 'Kaliya xarfo iyo lambaro ayaa loo ogolyahay!');
+        } else {
+            input.value = cleanedVal.toUpperCase();
+            resetIdField();
         }
     }
 
